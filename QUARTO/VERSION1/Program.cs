@@ -13,7 +13,8 @@ namespace VERSION1
             //ecrire qqchose
         {
 
-            Console.WriteLine("      \n XXXXXX \n X    X \n X    X \n X    X \n XXXXXX");
+            string a = "      \n XXXXXX \n X    X \n X    X \n X    X \n XXXXXX";
+            Console.WriteLine(a[10]);
             Console.WriteLine("      \n\n  XXXX  \n  X  X  \n  XXXX \n      ");
             Console.WriteLine("      \n\n   XX   \n  X  X  \n   XX  \n      ");
             Console.ForegroundColor = ConsoleColor.Blue;
