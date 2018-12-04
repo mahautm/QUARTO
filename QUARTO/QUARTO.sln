@@ -5,10 +5,6 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VERSION1", "VERSION1\VERSION1.csproj", "{67B9F784-892C-47FE-8222-977178840C06}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoulissesMateo", "CoulissesMatéo\CoulissesMateo.csproj", "{4F071A4F-ABBE-4B50-80A0-6FDE761A81A3}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoulissesConstance", "CoulissesConstance\CoulissesConstance.csproj", "{A503F87A-F371-4D7D-8B59-8F9C5F52C216}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,14 +15,6 @@ Global
 		{67B9F784-892C-47FE-8222-977178840C06}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{67B9F784-892C-47FE-8222-977178840C06}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{67B9F784-892C-47FE-8222-977178840C06}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4F071A4F-ABBE-4B50-80A0-6FDE761A81A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4F071A4F-ABBE-4B50-80A0-6FDE761A81A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4F071A4F-ABBE-4B50-80A0-6FDE761A81A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4F071A4F-ABBE-4B50-80A0-6FDE761A81A3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A503F87A-F371-4D7D-8B59-8F9C5F52C216}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A503F87A-F371-4D7D-8B59-8F9C5F52C216}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A503F87A-F371-4D7D-8B59-8F9C5F52C216}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A503F87A-F371-4D7D-8B59-8F9C5F52C216}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
