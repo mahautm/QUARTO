@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
 
 namespace VERSION1
 {
@@ -11,6 +12,15 @@ namespace VERSION1
         static void Main(string[] args)
             //ecrire qqchose
         {
+
+            Console.WriteLine("      \n XXXXXX \n X    X \n X    X \n X    X \n XXXXXX");
+            Console.WriteLine("      \n\n  XXXX  \n  X  X  \n  XXXX \n      ");
+            Console.WriteLine("      \n\n   XX   \n  X  X  \n   XX  \n      ");
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine("      \n\n   XX   \n  XXXX  \n   XX  \n      ");
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.WriteLine("      \n XXXXXX \n X    X \n X    X \n X    X \n XXXXXX");
+
         }
     }
 }
