@@ -8,6 +8,18 @@ namespace VERSION1
 {
     class CoulissesMateo
     {
+        public int TraduireBinVersDec(int bin)
+        {
+            int decimalNumber = 0, i = 0, remainder;
+            while (bin != 0)
+            {
+                remainder = bin % 10;
+                bin /= 10;
+                decimalNumber += remainder * (int)Math.Pow(2, i);
+                ++i;
+            }
+            return decimalNumber;
+        }
         public void AfficherPlateau(int[][] plat)
         {
             for(int ligne = 0; ligne<plat.Length;ligne++)
@@ -22,10 +34,9 @@ namespace VERSION1
                             int indice = 0;
 
                             //Consversion de binaire en décimale pour accéder à l'indice de l'affichage du tableau
-                            int bin = plat[ligne][colonne];
-                            indice +=bin % 10;
-                            indice += (bin - indice) % 100 / 10;
-                            indice += (bin - bin % 10 - ((bin - bin % 10) % 100))%1000/100;
+                            //On enlève la couleur qui sera traitée séparément
+                            indice = TraduireBinVersDec(plat[ligne][colonne] - 1000);
+                            
 
 
                         }

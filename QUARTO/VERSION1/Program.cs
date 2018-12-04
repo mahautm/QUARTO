@@ -31,7 +31,11 @@ namespace VERSION1
                 Console.WriteLine(tabAffichePiece[i]);
 
             }
-          
+
+            //test Convertisseur binaire
+            CoulissesMateo cm = new CoulissesMateo();
+            int a = cm.TraduireBinVersDec(101);
+            Console.WriteLine(a);
         }
     }
 }
