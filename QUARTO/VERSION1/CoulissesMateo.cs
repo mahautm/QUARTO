@@ -24,18 +24,16 @@ namespace VERSION1
         {
             for(int ligne = 0; ligne<plat.Length;ligne++)
             {
-                //!!virer les lignes et diviser plat[ligne[colonne par 4 (en division entière)
+                //!! virer les lignes et diviser plat[ligne[colonne par 4 (en division entière)
                 for (int sousligne = 0; sousligne <5;sousligne++)
                 {
                     for (int colonne = 0; colonne < plat[ligne].Length; colonne++)
                     {
-                        if ((ligne + colonne) % 2 == 0) Console.BackgroundColor = ConsoleColor.Gray;
+                        if ((ligne + colonne) % 2 == 0) Console.BackgroundColor = ConsoleColor.DarkCyan;
                         else Console.BackgroundColor = ConsoleColor.DarkGray;
                         if (plat[ligne][colonne] == -1) Console.Write("        ");
                         else
                         {
-                            Console.ForegroundColor = ConsoleColor.Black;
-
                             int indice = 0;
 
                             //Consversion de binaire en décimale pour accéder à l'indice de l'affichage du tableau
@@ -61,6 +59,68 @@ namespace VERSION1
             if(pieceChoisie/1000 == 1)
                 piecesDispo[2*TraduireBinVersDec(Math.Abs(pieceChoisie - 1000))+1] = -1;
             else piecesDispo[2 * TraduireBinVersDec(Math.Abs(pieceChoisie))] = -1;
+
+        }
+        public bool PlacerPiece(int[][] plateau, int x, int y, int piece)
+        {
+            //!! ajouter la transcription lettres chiffres?
+            //!! Gérer correctement cette erreur en fonction de comment on écrit la vraie partie
+            if (plateau[x][y] != -1) Console.WriteLine("Erreur! La Place est prise :(");
+            else plateau[x][y] = piece;
+
+            //Verifier si le placement de la pièce mène à la victoire pour chaque paramètre de la pièce
+            for(int i = 0; i < 4; i++)
+            {
+                int j = 0; //!! repasser tout en boucles for?
+                bool testLigne = true;
+                bool testColonne = true;
+                bool testDiag = true;
+                //test des colonnes et des lignes
+                while ((testLigne || testColonne) && j<3)
+                {
+                    if (testLigne && (piece / Math.Pow(10, i) % 10) != (plateau[x][j] / Math.Pow(10, i) % 10))
+                        testLigne = false;
+                    if (testColonne && (piece / Math.Pow(10, i) % 10) != (plateau[j][y] / Math.Pow(10, i) % 10))
+                        testColonne = false;
+                    j++;
+                }
+                if (testLigne || testColonne)
+                    return true;
+                //Dans le cas où l'on est dans une position où l'on peut gagner par diagonale, on verifie la diagonale
+                if (x == y)
+                {
+                    j = 0;
+                    while (testDiag && j >= 0)
+                    {
+                        if (testDiag && (piece / Math.Pow(10, i) % 10) != (plateau[j][j] / Math.Pow(10, i) % 10))
+                            testDiag = false;
+                        j++;
+                    }
+                }
+                else if (x + y == 3)
+                {
+                    j = 0;
+                    while (testDiag && j >= 0)
+                    {
+                        if (testDiag && (piece / Math.Pow(10, i) % 10) != (plateau[j][3-j] / Math.Pow(10, i) % 10))
+                            testDiag = false;
+                        j++;
+                    }
+                }
+                if (testDiag) return true;
+            }
+            return false;
+
+        }
+        public int ChoisirPiece(int[] pioche)
+        {
+            int rendu = -1;
+            Random R = new Random();
+            while(rendu == -1)
+            {
+                rendu = pioche[R.Next(pioche.Length - 1)];
+            }
+            return rendu;
 
         }
     }
