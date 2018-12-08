@@ -64,11 +64,12 @@ namespace VERSION1
         public bool PlacerPiece(int[][] plateau, int x, int y, int piece)
         {
             //!! ajouter la transcription lettres chiffres?
-            //!! Gérer correctement cette erreur en fonction de comment on écrit la vraie partie
-            if (plateau[x][y] != -1) Console.WriteLine("Erreur! La Place est prise :(");
+            //!! Gérer correctement cette erreur en fonction de comment on écrit le déroulement de la partie
+            if (plateau[x][y] != -1) Console.WriteLine("Erreur! La place est prise :(");
             else plateau[x][y] = piece;
 
             //Verifier si le placement de la pièce mène à la victoire pour chaque paramètre de la pièce
+            // la fonction renvoie true si la pièce mène à une victoire, false sinon.
             for(int i = 0; i < 4; i++)
             {
                 int j = 0; //!! repasser tout en boucles for?
@@ -122,6 +123,49 @@ namespace VERSION1
             }
             return rendu;
 
+        }
+        public void AfficherPiecesDispo(int[] pioche,string[] affichage)
+        {
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine("Pièces disponibles : ");
+
+            Console.WriteLine("Pièces Jaunes :");
+            Console.ForegroundColor = ConsoleColor.Yellow;
+
+            for (int sousLignes = 0; sousLignes < 5; sousLignes++)
+            {
+                for (int i = 0; i < 8; i++)
+                {
+                    int indice = TraduireBinVersDec(pioche[i] % 1000);
+                    if (i % 2 == 0) Console.BackgroundColor = ConsoleColor.DarkGray;
+                    else Console.BackgroundColor = ConsoleColor.DarkCyan;
+                    if (affichage[indice][i] == -1)
+                        Console.Write("        ");
+                    else for (int j = sousLignes * 8; j < (sousLignes + 1) * 8; j++)
+                            Console.Write(affichage[indice][j]);
+                }
+                Console.Write("\n");
+            }
+
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine("Pièces Bleus :");
+            Console.ForegroundColor = ConsoleColor.DarkBlue;
+            for (int sousLignes = 0; sousLignes < 5; sousLignes++)
+            {
+                for (int i = 0; i < 8; i++)
+                {
+                    int indice = TraduireBinVersDec(pioche[i] % 1000);
+                    if (i % 2 == 0) Console.BackgroundColor = ConsoleColor.DarkGray;
+                    else Console.BackgroundColor = ConsoleColor.DarkCyan;
+                    if (affichage[indice][i] == -1)
+                        Console.Write("        ");
+                    else for (int j = sousLignes * 8; j < (sousLignes +1) * 8; j++)
+                            Console.Write(affichage[indice][j]);
+                }
+                Console.Write("\n");
+            }
         }
     }
 }

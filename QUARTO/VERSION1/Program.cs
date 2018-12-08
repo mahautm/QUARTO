@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Drawing;
+
 namespace VERSION1
 {
     class Program
@@ -12,7 +12,7 @@ namespace VERSION1
             //ecrire qqchose
         {
             //Initialisation des pièces
-            // Encodage des pièces disponibles seon la convention(0|1) : couleur(bleu|rouge), taille(petit|grand), forme(rond|carré), remplissage(vide|plein)
+            // Encodage des pièces disponibles seon la convention(0|1) : couleur(bleu|jaune), taille(petit|grand), forme(rond|carré), remplissage(vide|plein)
             int[] pieceDispo = { 0000, 1000, 0001, 1001, 0010, 1010, 0011, 1011, 0100, 1100, 0101, 1101, 0110, 1101, 0111, 1111};
             
             //l'ordre choisi est le même que dans la pioche, à la différence prêt que les couleures ne sont pas représentées.
@@ -41,13 +41,12 @@ namespace VERSION1
             ////    Console.WriteLine(tabAffichePiece[i]);
 
             //}
-            Console.WriteLine("A");
-            Console.WriteLine("        \n        \n   XX   \n  X  X  \n   XX   \n        \n");
+            //Console.WriteLine("A");
+            //Console.WriteLine("        \n        \n   XX   \n  X  X  \n   XX   \n        \n");
 
-            //test Convertisseur binaire
-            CoulissesMateo cm = new CoulissesMateo();
             //plateau test
-            int[][] plateautest = { new int[] { 0000, 1001, 1001, 0011 }, new int[] { 0111, 0101, -1, 0110 }, new int[] { -1, 0110, 0111, 0010 }, new int[] { -1, -1, -1, 0011 } };
+            CoulissesMateo cm = new CoulissesMateo();
+            int[][] plateautest = { new int[] { 0000, 0001, 1101, 0011 }, new int[] { 0111, 0001, -1, 0110 }, new int[] { -1, 0110, 0111, 0010 }, new int[] { -1, -1, -1, 1011 } };
 
             //cm.Piocher(pieceDispo, 1001);
             //cm.Piocher(pieceDispo, 0101);
@@ -57,6 +56,9 @@ namespace VERSION1
             //}
 
             cm.AfficherPlateau(plateautest, tabAffichePiece);
+            cm.AfficherPiecesDispo(pieceDispo, tabAffichePiece);
+
+            //Partie : 
 
         }
     }
