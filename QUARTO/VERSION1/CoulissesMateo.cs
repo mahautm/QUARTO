@@ -130,16 +130,31 @@ namespace VERSION1
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine("Pièces disponibles : ");
 
-            Console.WriteLine("Pièces Jaunes :");
+            Console.WriteLine("Petites pièces");
             Console.ForegroundColor = ConsoleColor.Yellow;
+
+            //!! Poser la question au prof : Est-ce qu'en interrompant la boucle ce ne serait pas plus optimal?
 
             for (int sousLignes = 0; sousLignes < 5; sousLignes++)
             {
                 for (int i = 0; i < 8; i++)
                 {
+                    if (i == 4)
+                    {
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        Console.Write("        ");
+                    }
                     int indice = TraduireBinVersDec(pioche[i] % 1000);
-                    if (i % 2 == 0) Console.BackgroundColor = ConsoleColor.DarkGray;
-                    else Console.BackgroundColor = ConsoleColor.DarkCyan;
+                    if (i % 2 == 0)
+                    {
+                        Console.BackgroundColor = ConsoleColor.DarkGray;
+                        Console.ForegroundColor = ConsoleColor.DarkBlue;
+                    }
+                    else
+                    {
+                        Console.BackgroundColor = ConsoleColor.DarkCyan;
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                    }
                     if (affichage[indice][i] == -1)
                         Console.Write("        ");
                     else for (int j = sousLignes * 8; j < (sousLignes + 1) * 8; j++)
@@ -150,18 +165,30 @@ namespace VERSION1
 
             Console.BackgroundColor = ConsoleColor.Black;
             Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine("Pièces Bleus :");
-            Console.ForegroundColor = ConsoleColor.DarkBlue;
+            Console.WriteLine("Grandes pièces :");
             for (int sousLignes = 0; sousLignes < 5; sousLignes++)
             {
-                for (int i = 0; i < 8; i++)
+                for (int i = 8; i < 16; i++)
                 {
+                    if (i == 12)
+                    {
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        Console.Write("        ");
+                    }
                     int indice = TraduireBinVersDec(pioche[i] % 1000);
-                    if (i % 2 == 0) Console.BackgroundColor = ConsoleColor.DarkGray;
-                    else Console.BackgroundColor = ConsoleColor.DarkCyan;
+                    if (i % 2 == 0)
+                    {
+                        Console.BackgroundColor = ConsoleColor.DarkGray;
+                        Console.ForegroundColor = ConsoleColor.DarkBlue;
+                    }
+                    else
+                    {
+                        Console.BackgroundColor = ConsoleColor.DarkCyan;
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                    }
                     if (affichage[indice][i] == -1)
                         Console.Write("        ");
-                    else for (int j = sousLignes * 8; j < (sousLignes +1) * 8; j++)
+                    else for (int j = sousLignes * 8; j < (sousLignes + 1) * 8; j++)
                             Console.Write(affichage[indice][j]);
                 }
                 Console.Write("\n");
