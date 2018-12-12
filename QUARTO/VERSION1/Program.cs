@@ -10,16 +10,14 @@ namespace VERSION1
     {
         //!! reecrire avec une matrice
         // readonly, pas besoin de passer en param partout
-       public static  readonly string[] tabAffichePiece = {    "           XX     X  X     XX           ",
-                                            "           XX     XXXX     XX           ",
-                                            "          XXXX    X  X    XXXX          ",
-                                            "          XXXX    XXXX    XXXX          ",
-                                            "   XX     X  X   X    X   X  X     XX   ",
-                                            "   XX     XXXX   XXXXXX   XXXX     XX   ",
-                                            " XXXXXX  X    X  X    X  X    X  XXXXXX ",
-                                            " XXXXXX  XXXXXX  XXXXXX  XXXXXX  XXXXXX " };
-
-
+        public static readonly string[] affichage = {    "           XX     X  X     XX           ",
+                                                         "           XX     XXXX     XX           ",
+                                                         "          XXXX    X  X    XXXX          ",
+                                                         "          XXXX    XXXX    XXXX          ",
+                                                         "   XX     X  X   X    X   X  X     XX   ",
+                                                         "   XX     XXXX   XXXXXX   XXXX     XX   ",
+                                                         " XXXXXX  X    X  X    X  X    X  XXXXXX ",
+                                                         " XXXXXX  XXXXXX  XXXXXX  XXXXXX  XXXXXX " };
         static int TraduireBinVersDec(int bin)
         {
             int decimalNumber = 0, i = 0, remainder;
@@ -32,11 +30,12 @@ namespace VERSION1
             }
             return decimalNumber;
         }
-        static void AfficherPlateau(int[][] plat, string[] affichage)
+        static void AfficherPlateau(int[][] plat)
         {
+            
             Console.ResetColor();
 
-            Console.WriteLine("       0       1       2       3\n");
+            Console.WriteLine("       0       1       2       3");
             for (int ligne = 0; ligne < plat.Length; ligne++)
             {
                 //!! virer les lignes et diviser plat[ligne[colonne par 4 (en division entière)
@@ -68,14 +67,16 @@ namespace VERSION1
                         }
                     }
                     Console.Write("\n");
+                    Console.ResetColor();
+
                 }
 
             }
         }
-        static int ChoisirPiece(int[] piecesDispo, string[] affichage)
+        static int ChoisirPiece(int[] piecesDispo)
         {
             Console.WriteLine("Voici les pièces disponibles : ");
-            AfficherPiecesDispo(piecesDispo, affichage);
+            AfficherPiecesDispo(piecesDispo);
             Console.WriteLine("Choisis le numéro de la pièce que ton adversaire va jouer :");
             string rangPiece = Console.ReadLine();
             int iRangPiece;
@@ -92,7 +93,7 @@ namespace VERSION1
         static bool PlacerPiece(int[][] plateau, int x, int y, int piece)
         {
             plateau[x][y] = piece;
-            AfficherPlateau(plateau, tabAffichePiece); //!! utilisation var global
+            AfficherPlateau(plateau); //!! utilisation var global
             //Verifier si le placement de la pièce mène à la victoire pour chaque paramètre de la pièce
             // la fonction renvoie true si la pièce mène à une victoire, false sinon.
             for (int i = 0; i < 4; i++)
@@ -107,24 +108,14 @@ namespace VERSION1
                 while ((testLigne || testColonne) && j <= 3)
                 {
                     if (testLigne && (piece / (int)Math.Pow(10, i) % 10) != (plateau[x][j] / (int)Math.Pow(10, i) % 10))
-                    {
                         testLigne = false;
-                        Console.WriteLine((piece / (int)Math.Pow(10, i) % 10) + " " + (plateau[x][j] / (int)Math.Pow(10, i) % 10));
-
-                    }
-                    else Console.WriteLine("ligne " + x + " " + j);
                     if (testColonne && (piece / (int) Math.Pow(10, i) % 10) != (plateau[j][y] / (int)Math.Pow(10, i) % 10))
-                    {
                         testColonne = false;
-                        Console.WriteLine((piece / (int)Math.Pow(10, i) % 10) + " " + (plateau[x][j] / (int)Math.Pow(10, i) % 10));
-                    }
-                    else Console.WriteLine("colonne " + j + " " + y);
-
                     j++;
                 }
-                Console.WriteLine("Changement de Paramètre" + i);
                 if (testLigne || testColonne)
                     return true;
+
                 //Dans le cas où l'on est dans une position où l'on peut gagner par diagonale, on verifie la diagonale
                 if (x == y)
                 {
@@ -171,7 +162,7 @@ namespace VERSION1
 
         }
         
-        static void AfficherPiecesDispo(int[] pioche, string[] affichage)
+        static void AfficherPiecesDispo(int[] pioche)
         {
             Console.BackgroundColor = ConsoleColor.Black;
             Console.ForegroundColor = ConsoleColor.White;
@@ -249,20 +240,22 @@ namespace VERSION1
             Console.WriteLine();
 
         }
-        static int[] ChoisirEmplacement(int[][] plateau, string[] affichagePieces, int piece)
+        static int[] ChoisirEmplacement(int[][] plateau, int piece)
         {
-            Console.ResetColor();
+            // !! err, il y a le pb du tableau manquant que je ne vais pas nonplus trimbaler partout!
             Console.Clear();
-            AfficherPlateau(plateau, affichagePieces);
+            AfficherPlateau(plateau);
             Console.WriteLine("Ton adversaire a choisi cette pièce : ");
+            Console.BackgroundColor = ConsoleColor.DarkMagenta;
+
             for (int i = 0; i < 5; i++)
             {
                 if (piece / 1000 == 0) Console.ForegroundColor = ConsoleColor.DarkBlue;
                 else Console.ForegroundColor = ConsoleColor.DarkYellow;
-                Console.Write(affichagePieces[TraduireBinVersDec(piece % 1000)].Substring(i * 8, (i + 1) * 8));
+                Console.WriteLine(affichage[TraduireBinVersDec(piece % 1000)].Substring(i * 8, 8));
             }
             Console.ResetColor();
-            Console.WriteLine("où veux tu placer cette pièce ? \n(indiquer ligne x puis colone y au format : xy)");
+            Console.WriteLine("où veux tu la placer ? \n(indiquer ligne x puis colone y au format : xy)");
             string spos = Console.ReadLine();
             int ipos = 0;
             while (!int.TryParse(spos, out ipos) || !(ipos % 10 <= 3 && ipos / 10 <= 3 && ipos / 10 >= 0) || plateau[ipos / 10][ipos % 10] != -1)
@@ -272,7 +265,7 @@ namespace VERSION1
             }
             return new int[] { ipos / 10, ipos % 10 };
         }
-        static int[] ChoisirEmplacementAlea(int[][] plateau, string[] affichagePieces, int piece)
+        static int[] ChoisirEmplacementAlea(int[][] plateau, int piece)
         {
 
             Random R = new Random();
@@ -283,19 +276,104 @@ namespace VERSION1
                 ligne = R.Next(plateau.Length);
                 colone = R.Next(plateau[ligne].Length);
             } while (plateau[ligne][colone] != -1);
+
             return new int[] { ligne, colone };
 
 
         }
-        static void JouerCoupJoueur(int[][] plateau, int[] pieceDispo, string[] tabAffichePiece)
+        static void JouerCoupJoueur(int[][] plateau, int[] pieceDispo)
         {
             int piece = ChoisirPieceAlea(pieceDispo);
-            int[] emplacement = ChoisirEmplacement(plateau, tabAffichePiece, piece);
+            int[] emplacement = ChoisirEmplacement(plateau, piece);
             bool gagne = PlacerPiece(plateau, emplacement[0], emplacement[1], piece);
-            
+            Console.WriteLine("Continuer ? (Ecrire QUARTO si vous pensez avoir gagné)");
+            if (Console.ReadLine() == "QUARTO" && gagne)
+                Console.WriteLine("BRAVO! tu as gagné!");
+            //insérer fin de partie, et ou retour au menu
+        }
+        static void JouerCoupIA(int[][] plateau, int[] pieceDispo)
+        {
+            int piece = ChoisirPiece(pieceDispo);
+
+            int[] emplacement = ChoisirEmplacementAlea(plateau, piece);
+            bool gagne = PlacerPiece(plateau, emplacement[0], emplacement[1], piece);
+            if (gagne)
+            {
+                Console.WriteLine("QUARTO ! J'ai gagné !");
+                // relancer le menu !
+            }
         }
 
-        static void Test(int[][] plateau, int[] pieceDispo, string[] tabAffichePiece)
+        static bool JouerPileOuFace()
+        {
+            bool choix = true;
+            ConsoleKey cki = ConsoleKey.UpArrow;
+            Random R = new Random();
+            do
+            {
+                Console.Clear();
+                if (choix == true)
+                    Console.WriteLine("  --> Pile <--   ou       Face\n\n(utiliser les flèches du clavier pour sélectionner)");
+                else Console.WriteLine("      Pile       ou   --> Face <--\n\n(utiliser les flèches du clavier pour sélectionner)");
+                cki = Console.ReadKey().Key;
+
+
+                if (cki == ConsoleKey.LeftArrow || cki == ConsoleKey.RightArrow) choix = !choix;
+
+            } while (cki != ConsoleKey.Enter && cki != ConsoleKey.Spacebar);
+            Console.Clear();
+            if (choix == (new Random().Next(2) == 0))
+            {
+                Console.WriteLine("... Gagné !! Bravo, tu joueras donc le premier");
+                Console.ReadKey();
+                return true;
+            }
+            else
+            {
+                Console.WriteLine("... Perdu. Pas de chance. Je commencerai donc la partie.");
+                Console.ReadKey();
+                return false;
+            }
+        }
+        static void LancerMenu(int[][] plateau, int[] pieceDispo)
+        {
+            ConsoleKey cki = ConsoleKey.UpArrow;
+            int ligne = 0;
+           
+            do
+            {
+                Console.Clear();
+
+                Console.WriteLine("                        QUARTO\n");
+
+                if (ligne == 0) Console.Write("  -->");
+                else Console.Write("     ");
+                Console.WriteLine("              Jouer en mode aléatoire");
+
+                if (ligne == 1) Console.Write("  -->");
+                else Console.Write("     ");
+                Console.WriteLine("              Jouer en mode intelligent");
+
+                Console.WriteLine();
+                if (ligne == 2) Console.Write("  -->");
+                else Console.Write("     ");
+                Console.WriteLine("              Quitter");
+
+                cki = Console.ReadKey().Key;
+                if (cki == ConsoleKey.UpArrow)
+                    if (ligne == 0) ligne = 2;
+                    else ligne--;
+                else if (cki == ConsoleKey.DownArrow) ligne = (ligne + 1)%3;
+
+            } while (cki != ConsoleKey.Enter && cki != ConsoleKey.Spacebar);
+            if (ligne == 0) JouerRandom(plateau, pieceDispo);
+            else if (ligne == 1) Console.WriteLine("WIP... désolé");
+            else Console.WriteLine("Merci d'avoir joué !");
+            
+
+
+        }
+        static void Test(int[][] plateau, int[] pieceDispo)
         {
             //affichage test de toutes les pièces
 
@@ -326,10 +404,10 @@ namespace VERSION1
 
             //!! Il va falloir ajouter des console.WriteLine ou en tt cas des sauts de ligne parceque là c'est illisible.
             Console.Clear();
-            AfficherPlateau(plateautest, tabAffichePiece);
-            AfficherPlateau(plateau, tabAffichePiece);
-            AfficherPiecesDispo(pieceDispo, tabAffichePiece);
-            int piece = ChoisirPiece(pieceDispo,tabAffichePiece);
+            AfficherPlateau(plateautest);
+            AfficherPlateau(plateau);
+            AfficherPiecesDispo(pieceDispo);
+            int piece = ChoisirPiece(pieceDispo);
             ChoisirPieceAlea(pieceDispo);
 
             // Alors ça c'est magnifique je vais en mettre partout !! ça vide et remet la console propre. On peut construire un menu avec ça :)
@@ -337,19 +415,37 @@ namespace VERSION1
             Console.Clear();
             Console.ReadLine();
 
-            AfficherPiecesDispo(pieceDispo, tabAffichePiece);
+            AfficherPiecesDispo(pieceDispo);
             PlacerPiece(plateau, 2, 2, piece);
             Console.WriteLine();
-            AfficherPlateau(plateau, tabAffichePiece);
+            AfficherPlateau(plateau);
             //Partie : 
+
+            int[][] plateautest1 = {    new int[] { 0010, 0011, 0111, -1 },
+                                        new int[] { -1, -1, -1, -1 },
+                                        new int[] { -1, -1, -1, -1 },
+                                        new int[] { -1, -1, -1, -1 } };
+            Console.WriteLine(PlacerPiece(plateautest1, 0, 3, 1010));
+            AfficherPlateau(plateautest1);
         }
-        static void Jouer(int[][] plateau, int[] pieceDispo, string[] tabAffichePiece)
+        static void JouerRandom(int[][ ] plateau, int[] pieceDispo)
         {
-            Console.WriteLine("Bienvenue dans le jeu !");
-            Console.ReadLine();
             Console.Clear();
-            //!! Pile ou face ?
+            Console.WriteLine("          Bienvenue dans le jeu !\n");
+            // Pile ou face ?
+            Console.WriteLine("Choisissons qui commence en jouant à Pile ou Face. \n\n\n(Appuyer sur une touche pour continuer)");
+            Console.ReadKey();
+            bool premier = JouerPileOuFace();
+
+            do
+            {
+                if (premier) JouerCoupJoueur(plateau, pieceDispo);
+                JouerCoupIA(plateau, pieceDispo);
+                premier = true;
+            } while (true);
             
+
+
 
         }
         static void Main(string[] args)
@@ -365,15 +461,12 @@ namespace VERSION1
 
             //Initialisation du plateau avec ses identifiants, plus manipulable que les string. Nous décidons que -1 représente une case vide.
             int[][] plateau = { new int[] {-1,-1,-1,-1 }, new int[] { -1, -1, -1, -1 }, new int[] { -1, -1, -1, -1 }, new int[] { -1, -1, -1, -1 } };
-
+            Console.WriteLine("");
             //Test(plateau, pieceDispo, tabAffichePiece);
-            int[][] plateautest1 = {    new int[] { 0010, 0011, 0111, -1 },
-                                        new int[] { -1, -1, -1, -1 },
-                                        new int[] { -1, -1, -1, -1 },
-                                        new int[] { -1, -1, -1, -1 } };
-            Console.WriteLine(PlacerPiece(plateautest1, 0, 3, 1010));
-            AfficherPlateau(plateautest1, tabAffichePiece);
 
+            //JouerCoupJoueur(plateau, pieceDispo);
+            //JouerCoupIA(plateau,pieceDispo);
+            LancerMenu(plateau,pieceDispo );
 
         }
     }
