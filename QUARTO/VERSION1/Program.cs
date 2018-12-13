@@ -73,6 +73,85 @@ namespace VERSION1
 
             }
         }
+        static void AfficherPiecesDispo(int[] pioche)
+        {
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine();
+
+            Console.WriteLine("Petites pièces");
+            Console.ForegroundColor = ConsoleColor.Yellow;
+
+            //!! Poser la question au prof :( Est-ce qu'en interrompant la boucle ce ne serait pas plus optimal?
+
+            for (int sousLignes = 0; sousLignes < 5; sousLignes++)
+            {
+                for (int i = 0; i < 8; i++)
+                {
+                    if (i == 4)
+                    {
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        Console.Write("        ");
+                    }
+                    int indice = TraduireBinVersDec(pioche[i] % 1000);
+                    if (i % 2 == 0)
+                    {
+                        Console.BackgroundColor = ConsoleColor.DarkGray;
+                        Console.ForegroundColor = ConsoleColor.DarkBlue;
+                    }
+                    else
+                    {
+                        Console.BackgroundColor = ConsoleColor.DarkCyan;
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                    }
+                    if (pioche[i] == -1)
+                        Console.Write("        ");
+                    else for (int j = sousLignes * 8; j < (sousLignes + 1) * 8; j++)
+                            Console.Write(affichage[indice][j]);
+                }
+                Console.Write("\n");
+            }
+
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = ConsoleColor.White;
+
+            Console.WriteLine("   00      01      02      03              04      05      06      07");
+            Console.WriteLine("Grandes pièces :");
+            for (int sousLignes = 0; sousLignes < 5; sousLignes++)
+            {
+                for (int i = 8; i < 16; i++)
+                {
+                    if (i == 12)
+                    {
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        Console.Write("        ");
+                    }
+                    int indice = TraduireBinVersDec(pioche[i] % 1000);
+                    if (i % 2 == 0)
+                    {
+                        Console.BackgroundColor = ConsoleColor.DarkGray;
+                        Console.ForegroundColor = ConsoleColor.DarkBlue;
+                    }
+                    else
+                    {
+                        Console.BackgroundColor = ConsoleColor.DarkCyan;
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                    }
+                    if (pioche[i] == -1)
+                        Console.Write("        ");
+                    else for (int j = sousLignes * 8; j < (sousLignes + 1) * 8; j++)
+                            Console.Write(affichage[indice][j]);
+                }
+                Console.Write("\n");
+
+            }
+            Console.ResetColor();
+
+            Console.WriteLine("   08      09      10      11              12      13      14      15");
+            Console.WriteLine();
+
+        }
+
         static int ChoisirPiece(int[] piecesDispo)
         {
             Console.WriteLine("Voici les pièces disponibles : ");
@@ -161,85 +240,6 @@ namespace VERSION1
 
 
         }
-        
-        static void AfficherPiecesDispo(int[] pioche)
-        {
-            Console.BackgroundColor = ConsoleColor.Black;
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine();
-
-            Console.WriteLine("Petites pièces");
-            Console.ForegroundColor = ConsoleColor.Yellow;
-
-            //!! Poser la question au prof :( Est-ce qu'en interrompant la boucle ce ne serait pas plus optimal?
-
-            for (int sousLignes = 0; sousLignes < 5; sousLignes++)
-            {
-                for (int i = 0; i < 8; i++)
-                {
-                    if (i == 4)
-                    {
-                        Console.BackgroundColor = ConsoleColor.Black;
-                        Console.Write("        ");
-                    }
-                    int indice = TraduireBinVersDec(pioche[i] % 1000);
-                    if (i % 2 == 0)
-                    {
-                        Console.BackgroundColor = ConsoleColor.DarkGray;
-                        Console.ForegroundColor = ConsoleColor.DarkBlue;
-                    }
-                    else
-                    {
-                        Console.BackgroundColor = ConsoleColor.DarkCyan;
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                    }
-                    if (pioche[i] == -1)
-                        Console.Write("        ");
-                    else for (int j = sousLignes * 8; j < (sousLignes + 1) * 8; j++)
-                            Console.Write(affichage[indice][j]);
-                }
-                Console.Write("\n");
-            }
-
-            Console.BackgroundColor = ConsoleColor.Black;
-            Console.ForegroundColor = ConsoleColor.White;
-
-            Console.WriteLine("   00      01      02      03              04      05      06      07");
-            Console.WriteLine("Grandes pièces :");
-            for (int sousLignes = 0; sousLignes < 5; sousLignes++)
-            {
-                for (int i = 8; i < 16; i++)
-                {
-                    if (i == 12)
-                    {
-                        Console.BackgroundColor = ConsoleColor.Black;
-                        Console.Write("        ");
-                    }
-                    int indice = TraduireBinVersDec(pioche[i] % 1000);
-                    if (i % 2 == 0)
-                    {
-                        Console.BackgroundColor = ConsoleColor.DarkGray;
-                        Console.ForegroundColor = ConsoleColor.DarkBlue;
-                    }
-                    else
-                    {
-                        Console.BackgroundColor = ConsoleColor.DarkCyan;
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                    }
-                    if (pioche[i] == -1)
-                        Console.Write("        ");
-                    else for (int j = sousLignes * 8; j < (sousLignes + 1) * 8; j++)
-                            Console.Write(affichage[indice][j]);
-                }
-                Console.Write("\n");
-
-            }
-            Console.ResetColor();
-
-            Console.WriteLine("   08      09      10      11              12      13      14      15");
-            Console.WriteLine();
-
-        }
         static int[] ChoisirEmplacement(int[][] plateau, int piece)
         {
             // !! err, il y a le pb du tableau manquant que je ne vais pas nonplus trimbaler partout!
@@ -281,6 +281,8 @@ namespace VERSION1
 
 
         }
+
+        //!! Ces deux fonctions seront peut être à supprimer à la fin, je ne sais pas si elles nous seront utiles.
         static void JouerCoupJoueur(int[][] plateau, int[] pieceDispo)
         {
             int piece = ChoisirPieceAlea(pieceDispo);
@@ -303,7 +305,6 @@ namespace VERSION1
                 // relancer le menu !
             }
         }
-
         static bool JouerPileOuFace()
         {
             bool choix = true;
@@ -335,44 +336,105 @@ namespace VERSION1
                 return false;
             }
         }
-        static void LancerMenu(int[][] plateau, int[] pieceDispo)
+        static void JouerRandom(int[][] plateau, int[] pieceDispo)
+        {
+            Console.Clear();
+            Console.WriteLine("          Bienvenue dans le jeu !\n");
+            // Pile ou face ?
+            Console.WriteLine("Choisissons qui commence en jouant à Pile ou Face. \n\n\n(Appuyer sur une touche pour continuer)");
+            Console.ReadKey();
+
+            bool premier = JouerPileOuFace();
+            bool deuxieme = true;
+            bool gagne = false;
+            int piece;
+            int[] emplacement;
+
+            do
+            {
+                if (premier)
+                {
+                    piece = ChoisirPieceAlea(pieceDispo);
+                    emplacement = ChoisirEmplacement(plateau, piece);
+                    gagne = PlacerPiece(plateau, emplacement[0], emplacement[1], piece);
+                    Console.WriteLine("Continuer ? (Ecrire QUARTO si vous pensez avoir gagné)");
+                    if (Console.ReadLine() == "QUARTO" && gagne)
+                        Console.WriteLine("BRAVO! tu as gagné!");
+                    else if (gagne)
+                    {
+                        Console.WriteLine("Tu as oublié de dire Quarto ! J'ai gagné !");
+                        deuxieme = false;
+                    }
+
+                }
+                if (deuxieme)
+                {
+                    piece = ChoisirPiece(pieceDispo);
+                    emplacement = ChoisirEmplacementAlea(plateau, piece);
+                    gagne = PlacerPiece(plateau, emplacement[0], emplacement[1], piece);
+                    Console.WriteLine(gagne);
+                    if (gagne) Console.WriteLine("QUARTO ! J'ai gagné !");
+                    premier = true;
+                }
+                
+            } while (!gagne);
+            Console.WriteLine("\n(Appuyer sur une touche pour continuer)");
+            Console.ReadKey();
+
+
+
+
+        }
+        static void LancerMenu()
         {
             ConsoleKey cki = ConsoleKey.UpArrow;
             int ligne = 0;
-           
             do
             {
-                Console.Clear();
+                do
+                {
+                    Console.Clear();
 
-                Console.WriteLine("                        QUARTO\n");
+                    Console.WriteLine("                        QUARTO\n");
 
-                if (ligne == 0) Console.Write("  -->");
-                else Console.Write("     ");
-                Console.WriteLine("              Jouer en mode aléatoire");
+                    if (ligne == 0) Console.Write("  -->");
+                    else Console.Write("     ");
+                    Console.WriteLine("              Jouer en mode aléatoire");
 
-                if (ligne == 1) Console.Write("  -->");
-                else Console.Write("     ");
-                Console.WriteLine("              Jouer en mode intelligent");
+                    if (ligne == 1) Console.Write("  -->");
+                    else Console.Write("     ");
+                    Console.WriteLine("              Jouer en mode intelligent");
 
-                Console.WriteLine();
-                if (ligne == 2) Console.Write("  -->");
-                else Console.Write("     ");
-                Console.WriteLine("              Quitter");
+                    Console.WriteLine();
+                    if (ligne == 2) Console.Write("  -->");
+                    else Console.Write("     ");
+                    Console.WriteLine("              Quitter");
 
-                cki = Console.ReadKey().Key;
-                if (cki == ConsoleKey.UpArrow)
-                    if (ligne == 0) ligne = 2;
-                    else ligne--;
-                else if (cki == ConsoleKey.DownArrow) ligne = (ligne + 1)%3;
+                    cki = Console.ReadKey().Key;
+                    if (cki == ConsoleKey.UpArrow)
+                        if (ligne == 0) ligne = 2;
+                        else ligne--;
+                    else if (cki == ConsoleKey.DownArrow) ligne = (ligne + 1) % 3;
 
-            } while (cki != ConsoleKey.Enter && cki != ConsoleKey.Spacebar);
-            if (ligne == 0) JouerRandom(plateau, pieceDispo);
-            else if (ligne == 1) Console.WriteLine("WIP... désolé");
-            else Console.WriteLine("Merci d'avoir joué !");
+                } while (cki != ConsoleKey.Enter && cki != ConsoleKey.Spacebar);
+                if (ligne == 0) JouerRandom(new int[][]{ new int[] { -1, -1, -1, -1 }, new int[] { -1, -1, -1, -1 }, new int[] { -1, -1, -1, -1 }, new int[] { -1, -1, -1, -1 } }, new int[] { 0000, 1000, 0001, 1001, 0010, 1010, 0011, 1011, 0100, 1100, 0101, 1101, 0110, 1101, 0111, 1111});
+                else if (ligne == 1)
+                {
+                    Console.WriteLine("WIP... désolé");
+                    Console.ReadKey();
+                }
+                else
+                {
+                    Console.WriteLine("Merci d'avoir joué !");
+                    Console.ReadKey();
+                }
+            } while (ligne != 2);
+           
             
 
 
         }
+
         static void Test(int[][] plateau, int[] pieceDispo)
         {
             //affichage test de toutes les pièces
@@ -428,45 +490,26 @@ namespace VERSION1
             Console.WriteLine(PlacerPiece(plateautest1, 0, 3, 1010));
             AfficherPlateau(plateautest1);
         }
-        static void JouerRandom(int[][ ] plateau, int[] pieceDispo)
-        {
-            Console.Clear();
-            Console.WriteLine("          Bienvenue dans le jeu !\n");
-            // Pile ou face ?
-            Console.WriteLine("Choisissons qui commence en jouant à Pile ou Face. \n\n\n(Appuyer sur une touche pour continuer)");
-            Console.ReadKey();
-            bool premier = JouerPileOuFace();
-
-            do
-            {
-                if (premier) JouerCoupJoueur(plateau, pieceDispo);
-                JouerCoupIA(plateau, pieceDispo);
-                premier = true;
-            } while (true);
-            
-
-
-
-        }
         static void Main(string[] args)
             //ecrire qqchose
         {
             //Initialisation des pièces (faire dans une boucle?)
             // Encodage des pièces disponibles seon la convention(0|1) : couleur(bleu|jaune), taille(petit|grand), forme(rond|carré), remplissage(vide|plein)
-            int[] pieceDispo = { 0000, 1000, 0001, 1001, 0010, 1010, 0011, 1011, 0100, 1100, 0101, 1101, 0110, 1101, 0111, 1111};
+            
             
             //l'ordre choisi est le même que dans la pioche, à la différence prêt que les couleures ne sont pas représentées.
             //ie : Pour chaque string dans le tableau affichage, il y a deux pièces dans la pioche.
 
 
             //Initialisation du plateau avec ses identifiants, plus manipulable que les string. Nous décidons que -1 représente une case vide.
-            int[][] plateau = { new int[] {-1,-1,-1,-1 }, new int[] { -1, -1, -1, -1 }, new int[] { -1, -1, -1, -1 }, new int[] { -1, -1, -1, -1 } };
+            
             Console.WriteLine("");
             //Test(plateau, pieceDispo, tabAffichePiece);
 
-            //JouerCoupJoueur(plateau, pieceDispo);
-            //JouerCoupIA(plateau,pieceDispo);
-            LancerMenu(plateau,pieceDispo );
+            //JouerCoupIA(new int[][] { new int[] { -1, -1, -1, -1 }, new int[] { -1, -1, -1, -1 }, new int[] { -1, -1, -1, -1 }, new int[] { -1, -1, -1, -1 } }, new int[] { 0000, 1000, 0001, 1001, 0010, 1010, 0011, 1011, 0100, 1100, 0101, 1101, 0110, 1101, 0111, 1111 });
+            //JouerCoupJoueur(new int[][] { new int[] { -1, -1, -1, -1 }, new int[] { -1, -1, -1, -1 }, new int[] { -1, -1, -1, -1 }, new int[] { -1, -1, -1, -1 } }, new int[] { 0000, 1000, 0001, 1001, 0010, 1010, 0011, 1011, 0100, 1100, 0101, 1101, 0110, 1101, 0111, 1111 });
+
+            LancerMenu();
 
         }
     }
