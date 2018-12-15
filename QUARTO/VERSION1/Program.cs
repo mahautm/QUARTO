@@ -239,6 +239,10 @@ namespace VERSION1
 
 
         }
+        static int ChoisirPieceIntelligent(int[] pioche)//WIP
+        {
+            return 1000;
+        }
         static int[] ChoisirEmplacement(int[][] plateau, int piece)
         {
             // !! err, il y a le pb du tableau manquant que je ne vais pas nonplus trimbaler partout!
@@ -250,7 +254,7 @@ namespace VERSION1
             for (int i = 0; i < 5; i++)
             {
                 if (piece / 1000 == 0) Console.ForegroundColor = ConsoleColor.DarkBlue;
-                else Console.ForegroundColor = ConsoleColor.DarkYellow;
+                else Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine(affichage[TraduireBinVersDec(piece % 1000)].Substring(i * 8, 8));
             }
             Console.ResetColor();
@@ -279,6 +283,10 @@ namespace VERSION1
             return new int[] { ligne, colone };
 
 
+        }
+        static int[] ChoisirEmplacementIntelligent(int[][] plateau, int piece)//WIP
+        {
+            return new int[] { 1, 1 };
         }
 
         //!! Ces deux fonctions seront peut être à supprimer à la fin, je ne sais pas si elles nous seront utiles.
@@ -386,6 +394,65 @@ namespace VERSION1
                     premier = true;
                 }
                 
+            } while (!gagne);
+            Console.WriteLine("\n(Appuyer sur une touche pour continuer)");
+            Console.ReadKey();
+
+
+
+
+        }
+        static void JouerIntelligent(int[][] plateau, int[] pieceDispo)
+        {
+            Console.Clear();
+            Console.WriteLine("          Bienvenue dans le jeu !\n");
+            // Pile ou face ?
+            Console.WriteLine("Choisissons qui commence en jouant à Pile ou Face. \n\n\n(Appuyer sur une touche pour continuer)");
+            Console.ReadKey();
+
+            bool premier = JouerPileOuFace();
+            bool deuxieme = true;
+            bool gagne = false;
+            int piece;
+            int[] emplacement;
+
+            do
+            {
+                if (premier)
+                {
+                    piece = ChoisirPieceIntelligent(pieceDispo);
+                    emplacement = ChoisirEmplacement(plateau, piece);
+                    gagne = PlacerPiece(plateau, emplacement[0], emplacement[1], piece);
+                    Console.WriteLine("Continuer ? (Ecrire QUARTO si vous pensez avoir gagné)");
+                    string input = Console.ReadLine();
+                    if (input == "QUARTO" && gagne)
+                    {
+                        deuxieme = false;
+                        Console.WriteLine("BRAVO! tu as gagné!");
+                    }
+                    else if (input == "QUARTO" && !gagne)
+                    {
+                        deuxieme = false;
+                        gagne = true;
+                        Console.WriteLine("C'est faux... Il n'y a pas QUARTO. Tu perds donc cette partie.");
+                    }
+                    else if (gagne)
+                    {
+                        Console.WriteLine("Tu as oublié de dire Quarto ! J'ai gagné !");
+                        deuxieme = false;
+                    }
+
+                }
+                if (deuxieme)
+                {
+                    piece = ChoisirPiece(pieceDispo);
+                    emplacement = ChoisirEmplacementIntelligent(plateau, piece);
+                    gagne = PlacerPiece(plateau, emplacement[0], emplacement[1], piece);
+                    Console.WriteLine(gagne);
+                    if (gagne) Console.WriteLine("QUARTO ! J'ai gagné !");
+                    premier = true;
+                }
+
             } while (!gagne);
             Console.WriteLine("\n(Appuyer sur une touche pour continuer)");
             Console.ReadKey();
