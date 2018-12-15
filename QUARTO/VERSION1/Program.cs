@@ -186,9 +186,9 @@ namespace VERSION1
                 //!! Optimisation : si il y a une case vide, alors nécessairement il n'y a pas QUARTO
                 while ((testLigne || testColonne) && j <= 3)
                 {
-                    if (testLigne && (piece / (int)Math.Pow(10, i) % 10) != (plateau[x][j] / (int)Math.Pow(10, i) % 10))
+                    if (testLigne && plateau[x][j] == -1 || (piece / (int)Math.Pow(10, i) % 10) != (plateau[x][j] / (int)Math.Pow(10, i) % 10))
                         testLigne = false;
-                    if (testColonne && (piece / (int) Math.Pow(10, i) % 10) != (plateau[j][y] / (int)Math.Pow(10, i) % 10))
+                    if (testColonne && plateau[j][y] == -1 || (piece / (int) Math.Pow(10, i) % 10) != (plateau[j][y] / (int)Math.Pow(10, i) % 10))
                         testColonne = false;
                     j++;
                 }
@@ -201,24 +201,23 @@ namespace VERSION1
                     j = 0;
                     while (testDiag && j <=3)
                     {
-                        if (testDiag && (piece / (int)Math.Pow(10, i) % 10) != (plateau[j][j] / (int)Math.Pow(10, i) % 10))
+                        if (testDiag && plateau[j][j] == -1 || (piece / (int)Math.Pow(10, i) % 10) != (plateau[j][j] / (int)Math.Pow(10, i) % 10))
                             testDiag = false;
                         j++;
                     }
+                    if (testDiag) return true;
                 }
                 else if (x + y == 3)
                 {
                     j = 0;
                     while (testDiag && j <= 3)
                     {
-                        if (testDiag && (piece / (int)Math.Pow(10, i) % 10) != (plateau[j][3 - j] / (int)Math.Pow(10, i) % 10))
+                        if (testDiag && plateau[j][3-j] == -1 || (piece / (int)Math.Pow(10, i) % 10) != (plateau[j][3 - j] / (int)Math.Pow(10, i) % 10))
                             testDiag = false;
                         j++;
                     }
+                    if (testDiag) return true;
                 }
-         
-                if (testDiag) return true;
-            
             }
             return false;
 
@@ -358,8 +357,18 @@ namespace VERSION1
                     emplacement = ChoisirEmplacement(plateau, piece);
                     gagne = PlacerPiece(plateau, emplacement[0], emplacement[1], piece);
                     Console.WriteLine("Continuer ? (Ecrire QUARTO si vous pensez avoir gagné)");
-                    if (Console.ReadLine() == "QUARTO" && gagne)
+                    string input = Console.ReadLine();
+                    if (input == "QUARTO" && gagne)
+                    {
+                        deuxieme = false;
                         Console.WriteLine("BRAVO! tu as gagné!");
+                    }
+                    else if (input == "QUARTO" && !gagne)
+                    {
+                        deuxieme = false;
+                        gagne = true;
+                        Console.WriteLine("C'est faux... Il n'y a pas QUARTO. Tu perds donc cette partie.");
+                    }
                     else if (gagne)
                     {
                         Console.WriteLine("Tu as oublié de dire Quarto ! J'ai gagné !");
