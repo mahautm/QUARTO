@@ -8,6 +8,7 @@ namespace VERSION1
 {
     class Program
     {
+        // Il faut ajouter la gestion du cas où la grille se termine sur une égalité.
         //!! reecrire avec une matrice
         // readonly, pas besoin de passer en param partout
         public static readonly string[] affichage = {    "           XX     X  X     XX           ",
@@ -152,6 +153,14 @@ namespace VERSION1
 
         }
 
+        static void EvaluerPlateau(int[][] plateau)//WIP
+        {
+            //Si cette grille est une victoire, mettre des points positifs.
+            //Si cette grille est une défaite, mettre des points négatifs.
+            //(la vérification de ces deux points est faite par placerpièce... Donc il faut l'inclure dans la fonction d'une manière ou d'une autre.)
+            //Sinon, mettre des points lorsqu'il y a une forte connexité entre les pièces? 
+            //Mais une forte connexité est avantageuse pour les deux joueurs je pense :/
+        }
         static int ChoisirPiece(int[] piecesDispo)
         {
             Console.WriteLine("Voici les pièces disponibles : ");
