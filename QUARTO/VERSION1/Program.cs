@@ -10,6 +10,7 @@ namespace VERSION1
     {
         //!! reecrire avec une matrice
         // readonly, pas besoin de passer en param partout
+        //Refaire ce tableau avec des sous-tableaux
         public static readonly string[] affichage = {    "           XX     X  X     XX           ",
                                                          "           XX     XXXX     XX           ",
                                                          "          XXXX    X  X    XXXX          ",
@@ -151,6 +152,10 @@ namespace VERSION1
             Console.WriteLine();
 
         }
+        static int[] ChoisirCoup(int[] tab)
+        {
+
+        }
 
         static int ChoisirPiece(int[] piecesDispo)
         {
@@ -241,9 +246,11 @@ namespace VERSION1
         }
         static int ChoisirPieceIntelligent(int[] pioche)//WIP
         {
+            //!! dans le truc récursif
             return 1000;
         }
         static int[] ChoisirEmplacement(int[][] plateau, int piece)
+
         {
             // !! err, il y a le pb du tableau manquant que je ne vais pas nonplus trimbaler partout!
             Console.Clear();
@@ -263,7 +270,7 @@ namespace VERSION1
             int ipos = 0;
             while (!int.TryParse(spos, out ipos) || !(ipos % 10 <= 3 && ipos / 10 <= 3 && ipos / 10 >= 0) || plateau[ipos / 10][ipos % 10] != -1)
             {
-                Console.WriteLine("ILe format n'est pas bon ou la case choisie n'est pas vide ! \nindiquer ligne x puis colone y au format : xy ");
+                Console.WriteLine("Le format n'est pas bon ou la case choisie n'est pas vide ! \nindiquer ligne x puis colone y au format : xy ");
                 spos = Console.ReadLine();
             }
             return new int[] { ipos / 10, ipos % 10 };
@@ -493,7 +500,7 @@ namespace VERSION1
                     else if (cki == ConsoleKey.DownArrow) ligne = (ligne + 1) % 3;
 
                 } while (cki != ConsoleKey.Enter && cki != ConsoleKey.Spacebar);
-                if (ligne == 0) JouerRandom(new int[][]{ new int[] { -1, -1, -1, -1 }, new int[] { -1, -1, -1, -1 }, new int[] { -1, -1, -1, -1 }, new int[] { -1, -1, -1, -1 } }, new int[] { 0000, 1000, 0001, 1001, 0010, 1010, 0011, 1011, 0100, 1100, 0101, 1101, 0110, 1101, 0111, 1111});
+                if (ligne == 0) JouerRandom(new int[][]{ new int[] { -1, -1, -1, -1 }, new int[] { -1, -1, -1, -1 }, new int[] { -1, -1, -1, -1 }, new int[] { -1, -1, -1, -1 } }, new int[] { 0000, 1000, 0001, 1001, 0010, 1010, 0011, 1011, 0100, 1100, 0101, 1101, 0110, 1110, 0111, 1111});
                 else if (ligne == 1)
                 {
                     Console.WriteLine("WIP... désolé");
