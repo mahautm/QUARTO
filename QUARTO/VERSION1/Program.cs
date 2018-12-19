@@ -322,11 +322,6 @@ namespace VERSION1
 
 
         }
-        static int ChoisirPieceIntelligent(int[] pioche)//WIP
-        {
-            //!! dans le truc récursif
-            return 1000;
-        }
         static int[] ChoisirEmplacement(int[][] plateau, int piece)
 
         {
@@ -369,11 +364,6 @@ namespace VERSION1
 
 
         }
-        static int[] ChoisirEmplacementIntelligent(int[][] plateau, int piece)//WIP
-        {
-            return new int[] { 1, 1 };
-        }
-
         //!! Ces deux fonctions seront peut être à supprimer à la fin, je ne sais pas si elles nous seront utiles.
         static void JouerCoupJoueur(int[][] plateau, int[] pieceDispo)
         {
@@ -503,6 +493,7 @@ namespace VERSION1
 
             do
             {
+
                 if (premier)
                 {
                     piece = ChoisirPieceIntelligent(pieceDispo);
