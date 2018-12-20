@@ -180,8 +180,8 @@ namespace VERSION1
                         //Si on tombe sur une défaite( ou une victoire), inutile de chercher plus loin, c'est un coup à éviter (ou à jouer) nécessairement
                         //On utilise (16-prof) car 16 coups peuvent être joués au maximum, la profondeur est nécessairement inférieur à 16.
                         //De cette manière l'algo privilégie les victoires rapides
-                        if (victoire) return new int[] { (1 * (16 - profondeur)), ligne, colonne, -1 };
-                        else if (!victoire) return new int[] { (-1 *(16 - profondeur)), ligne, colonne,-1 };
+                        if (victoire && minOrMax) return new int[] { (1 * (16 - profondeur)), ligne, colonne, -1 };
+                        else if (victoire && !minOrMax) return new int[] { (-1 *(16 - profondeur)), ligne, colonne,-1 };
 
                         // si le coup ne mène pas à une défaite (ou une victoire) alors on regarde le score qu'on aurait en donnant chacune des pièce à 
                         //l'adversaire, en supposant qu'il jouerait le meilleur coup possible.
@@ -485,10 +485,12 @@ namespace VERSION1
             Console.WriteLine("Choisissons qui commence en jouant à Pile ou Face. \n\n\n(Appuyer sur une touche pour continuer)");
             Console.ReadKey();
 
-            bool premier = JouerPileOuFace();
+            bool premier = !JouerPileOuFace();
             bool deuxieme = true;
             bool gagne = false;
-            int piece;
+            //Choisi une pièce au hasard à jouer en premier si l'IA commence
+            Random R = new Random();
+            int piece = pieceDispo[R.Next(16)];
             int[] emplacement;
 
             do
@@ -496,7 +498,6 @@ namespace VERSION1
 
                 if (premier)
                 {
-                    piece = ChoisirPieceIntelligent(pieceDispo);
                     emplacement = ChoisirEmplacement(plateau, piece);
                     gagne = PlacerPiece(plateau, emplacement[0], emplacement[1], piece);
                     Console.WriteLine("Continuer ? (Ecrire QUARTO si vous pensez avoir gagné)");
@@ -522,11 +523,14 @@ namespace VERSION1
                 if (deuxieme)
                 {
                     piece = ChoisirPiece(pieceDispo);
-                    emplacement = ChoisirEmplacementIntelligent(plateau, piece);
-                    gagne = PlacerPiece(plateau, emplacement[0], emplacement[1], piece);
+                    emplacement = ChoisirCoupMinMax(plateau, pieceDispo,piece,0);
+                    gagne = PlacerPiece(plateau, emplacement[1], emplacement[2], piece);
                     Console.WriteLine(gagne);
                     if (gagne) Console.WriteLine("QUARTO ! J'ai gagné !");
                     premier = true;
+                    piece = emplacement[3];
+                    Console.WriteLine(piece);
+                    Console.ReadKey();
                 }
 
             } while (!gagne);
@@ -569,12 +573,10 @@ namespace VERSION1
                     else if (cki == ConsoleKey.DownArrow) ligne = (ligne + 1) % 3;
 
                 } while (cki != ConsoleKey.Enter && cki != ConsoleKey.Spacebar);
-                if (ligne == 0) JouerRandom(new int[][]{ new int[] { -1, -1, -1, -1 }, new int[] { -1, -1, -1, -1 }, new int[] { -1, -1, -1, -1 }, new int[] { -1, -1, -1, -1 } }, new int[] { 0000, 1000, 0001, 1001, 0010, 1010, 0011, 1011, 0100, 1100, 0101, 1101, 0110, 1110, 0111, 1111});
+                if (ligne == 0)
+                    JouerRandom(new int[][]{ new int[] { -1, -1, -1, -1 }, new int[] { -1, -1, -1, -1 }, new int[] { -1, -1, -1, -1 }, new int[] { -1, -1, -1, -1 } }, new int[] { 0000, 1000, 0001, 1001, 0010, 1010, 0011, 1011, 0100, 1100, 0101, 1101, 0110, 1110, 0111, 1111});
                 else if (ligne == 1)
-                {
-                    Console.WriteLine("WIP... désolé");
-                    Console.ReadKey();
-                }
+                    JouerIntelligent(new int[][] { new int[] { -1, -1, -1, -1 }, new int[] { -1, -1, -1, -1 }, new int[] { -1, -1, -1, -1 }, new int[] { -1, -1, -1, -1 } }, new int[] { 0000, 1000, 0001, 1001, 0010, 1010, 0011, 1011, 0100, 1100, 0101, 1101, 0110, 1110, 0111, 1111 });
                 else
                 {
                     Console.WriteLine("Merci d'avoir joué !");
