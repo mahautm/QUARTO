@@ -8,7 +8,7 @@ namespace VERSION1
 {
     class Program
     {
-        // Il faut ajouter la gestion du cas où la grille se termine sur une égalité.
+        //!! Il faut ajouter la gestion du cas où la grille se termine sur une égalité.
         //!! reecrire avec une matrice
         // readonly, pas besoin de passer en param partout
         //Refaire ce tableau avec des sous-tableaux
@@ -160,7 +160,7 @@ namespace VERSION1
             // La fonction renvoie -1 comme pièce si le programme gagne avant d'avoir besoin de donner une pièce à son adversaire.
             // La fonction renvoie (-1,-1) comme coordonés en cas d'égalité (lorsqu'aucune place n'est libre)
 
-            int[] minMax = { 0, -1 , -1 , -1 };
+            int[] minMax = { -1, -1 , -1 , -1 };
             bool minOrMax = profondeur % 2 == 0;
 
 
@@ -169,6 +169,8 @@ namespace VERSION1
             {
                 for(int ligne = 0; ligne < plateau[colonne].Length; ligne++)
                 {
+                    Console.WriteLine("ligne : " + ligne + "colonne : " + colonne + " profondeur : " + profondeur);
+                    AfficherPlateau(plateau);
                     //On vérifie qu'on peut bien jouer dans cette case, qu'elle est vide.
                     if (plateau[ligne][colonne] == -1)
                     {
@@ -180,8 +182,16 @@ namespace VERSION1
                         //Si on tombe sur une défaite( ou une victoire), inutile de chercher plus loin, c'est un coup à éviter (ou à jouer) nécessairement
                         //On utilise (16-prof) car 16 coups peuvent être joués au maximum, la profondeur est nécessairement inférieur à 16.
                         //De cette manière l'algo privilégie les victoires rapides
-                        if (victoire && minOrMax) return new int[] { (1 * (16 - profondeur)), ligne, colonne, -1 };
-                        else if (victoire && !minOrMax) return new int[] { (-1 *(16 - profondeur)), ligne, colonne,-1 };
+                        if (victoire && minOrMax)
+                        {
+                            Console.WriteLine("exit1");
+                            return new int[] { (1 * (16 - profondeur)), ligne, colonne, -1 };
+                        }
+                        else if (victoire && !minOrMax)
+                        {
+                            Console.WriteLine("exit2");
+                            return new int[] { (-1 * (16 - profondeur)), ligne, colonne, -1 };
+                        }
 
                         // si le coup ne mène pas à une défaite (ou une victoire) alors on regarde le score qu'on aurait en donnant chacune des pièce à 
                         //l'adversaire, en supposant qu'il jouerait le meilleur coup possible.
@@ -195,26 +205,32 @@ namespace VERSION1
                                     int[] copiePieceDispo = (int[])pieceDispo.Clone();
                                     copiePieceDispo[pieceRang] = -1;
                                     //On regarde quel score donne le choix d'une des pièces (partie récursive de l'algorithme)
-                                    int[] scorePiece = ChoisirCoupMinMax(paleCopie, copiePieceDispo, pieceDispo[pieceRang], profondeur + 1);
-                                    
+                                    int scorePiece = ChoisirCoupMinMax(paleCopie, copiePieceDispo, pieceDispo[pieceRang], profondeur + 1)[0];
+
                                     // Dans le cas où l'on est à une profondeur pair, et donc que l'on cherche à maximiser le score,
                                     //alors on stock dans minMax le score maximal qu'on puisse obtenir en donnant une des pièceDispo à l'adversaire
-                                    if (minOrMax && scorePiece[0] > minMax[0])
+                                    if (minOrMax && scorePiece > minMax[0])
                                     {
-                                        minMax[0] = scorePiece[0];
+                                        Console.Write("Top1");
+                                        minMax[0] = scorePiece;
                                         minMax[1] = ligne;
                                         minMax[2] = colonne;
                                         minMax[3] = pieceDispo[pieceRang];
                                     }
                                     
                                     //même chose dans le cas où l'on simule le coup de l'adversaire
-                                    else if (!minOrMax && scorePiece[0] < minMax[0])
+                                    else if (!minOrMax && scorePiece < minMax[0])
                                     {
-                                        minMax[0] = scorePiece[0];
+                                        Console.Write("Top2");
+
+                                        minMax[0] = scorePiece;
                                         minMax[1] = ligne;
                                         minMax[2] = colonne;
                                         minMax[3] = pieceDispo[pieceRang];
                                     }
+                                    else Console.WriteLine("Top3");
+                                    Console.WriteLine(" MinMax : " + minMax[0] + " " + scorePiece + " " + minMax[3]);
+
 
                                 }
                             }
@@ -224,6 +240,7 @@ namespace VERSION1
                 }
             }
             //On renvoie le coup menant le plus rapidement et le plus surement à une victoire 
+            Console.WriteLine("SadExit");
             return minMax;
         }
 
@@ -255,7 +272,6 @@ namespace VERSION1
         static bool PlacerPiece(int[][] plateau, int x, int y, int piece)
         {
             plateau[x][y] = piece;
-            AfficherPlateau(plateau); //!! utilisation var global
             //Verifier si le placement de la pièce mène à la victoire pour chaque paramètre de la pièce
             // la fonction renvoie true si la pièce mène à une victoire, false sinon.
             for (int i = 0; i < 4; i++)
@@ -310,14 +326,14 @@ namespace VERSION1
             //!! Si on a le temps il faut récupérer un tableau des coups possibles, et piocher aléatoirement là dedans seulement
             int rendu = -1;
             Random R = new Random();
+            int position = -1;
             while (rendu == -1)
             {
-                rendu = pioche[R.Next(pioche.Length)];
+                position = R.Next(pioche.Length);
+                rendu = pioche[position];
             }
             //enlève la pièce de la pioche
-            if (rendu / 1000 == 1)
-                pioche[2 * TraduireBinVersDec(Math.Abs(rendu - 1000)) + 1] = -1;
-            else pioche[2 * TraduireBinVersDec(Math.Abs(rendu))] = -1;
+            pioche[position] = -1;
             return rendu;
 
 
@@ -439,6 +455,7 @@ namespace VERSION1
                     piece = ChoisirPieceAlea(pieceDispo);
                     emplacement = ChoisirEmplacement(plateau, piece);
                     gagne = PlacerPiece(plateau, emplacement[0], emplacement[1], piece);
+                    AfficherPlateau(plateau);
                     Console.WriteLine("Continuer ? (Ecrire QUARTO si vous pensez avoir gagné)");
                     string input = Console.ReadLine();
                     if (input == "QUARTO" && gagne)
@@ -464,6 +481,7 @@ namespace VERSION1
                     piece = ChoisirPiece(pieceDispo);
                     emplacement = ChoisirEmplacementAlea(plateau, piece);
                     gagne = PlacerPiece(plateau, emplacement[0], emplacement[1], piece);
+                    AfficherPlateau(plateau);
                     Console.WriteLine(gagne);
                     if (gagne) Console.WriteLine("QUARTO ! J'ai gagné !");
                     premier = true;
@@ -488,10 +506,12 @@ namespace VERSION1
             bool premier = !JouerPileOuFace();
             bool deuxieme = true;
             bool gagne = false;
-            //Choisi une pièce au hasard à jouer en premier si l'IA commence
-            Random R = new Random();
-            int piece = pieceDispo[R.Next(16)];
             int[] emplacement;
+            int piece = -1;
+
+            //Choisi une pièce au hasard à jouer en premier si l'IA commence
+            if (premier)
+                piece = ChoisirPieceAlea(pieceDispo);
 
             do
             {
@@ -500,6 +520,7 @@ namespace VERSION1
                 {
                     emplacement = ChoisirEmplacement(plateau, piece);
                     gagne = PlacerPiece(plateau, emplacement[0], emplacement[1], piece);
+                    AfficherPlateau(plateau);
                     Console.WriteLine("Continuer ? (Ecrire QUARTO si vous pensez avoir gagné)");
                     string input = Console.ReadLine();
                     if (input == "QUARTO" && gagne)
@@ -524,13 +545,20 @@ namespace VERSION1
                 {
                     piece = ChoisirPiece(pieceDispo);
                     emplacement = ChoisirCoupMinMax(plateau, pieceDispo,piece,0);
+
+                    //On retire la pièce choisie des pièces disponibles, car contrairement à la partie aléatoire,où cette action est inclue dans la fonction de choix,
+                    //ici la fonction minmax ne fait qu'indiquer le meilleur coup possible, mais ne modifie aucun tableau.
+                    if (emplacement[3] / 1000 == 1)
+                        pieceDispo[2 * TraduireBinVersDec(Math.Abs(emplacement[3] - 1000)) + 1] = -1;
+                    else pieceDispo[2 * TraduireBinVersDec(Math.Abs(emplacement[3]))] = -1;
+                    Console.WriteLine(piece + " " + emplacement[1] + " " + emplacement[2]);
+                    Console.ReadKey();
+
                     gagne = PlacerPiece(plateau, emplacement[1], emplacement[2], piece);
-                    Console.WriteLine(gagne);
+                    AfficherPlateau(plateau);
                     if (gagne) Console.WriteLine("QUARTO ! J'ai gagné !");
                     premier = true;
                     piece = emplacement[3];
-                    Console.WriteLine(piece);
-                    Console.ReadKey();
                 }
 
             } while (!gagne);
