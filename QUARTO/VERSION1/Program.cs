@@ -20,6 +20,11 @@ namespace VERSION1
                                                          "   XX     XXXX   XXXXXX   XXXX     XX   ",
                                                          " XXXXXX  X    X  X    X  X    X  XXXXXX ",
                                                          " XXXXXX  XXXXXX  XXXXXX  XXXXXX  XXXXXX " };
+        /// <summary>
+        /// Prend un int écrit en binaire, le renvoie écrit en décimal
+        /// </summary>
+        /// <param name="bin">le nombre binaire à traduire</param>
+        /// <returns>le nombre binaire traduit en décimal</returns>
         static int TraduireBinVersDec(int bin)
         {
             int decimalNumber = 0, i = 0, remainder;
@@ -32,6 +37,10 @@ namespace VERSION1
             }
             return decimalNumber;
         }
+        /// <summary>
+        /// Affiche un plateau dans la console
+        /// </summary>
+        /// <param name="plat">le plateau à afficher</param>
         static void AfficherPlateau(int[][] plat)
         {
             
@@ -75,6 +84,10 @@ namespace VERSION1
 
             }
         }
+        /// <summary>
+        /// Affiche les pièces disponibles à un moment donné
+        /// </summary>
+        /// <param name="pioche">tableau des pièces disponibles</param>
         static void AfficherPiecesDispo(int[] pioche)
         {
             Console.BackgroundColor = ConsoleColor.Black;
@@ -83,8 +96,6 @@ namespace VERSION1
 
             Console.WriteLine("Petites pièces");
             Console.ForegroundColor = ConsoleColor.Yellow;
-
-            //!! Poser la question au prof :( Est-ce qu'en interrompant la boucle ce ne serait pas plus optimal?
 
             for (int sousLignes = 0; sousLignes < 5; sousLignes++)
             {
@@ -154,6 +165,14 @@ namespace VERSION1
 
         }
 
+        /// <summary>
+        /// Place la pièce voulue à l'endroit voulut du tableau, puis vérifie si cette action mène à une victoire
+        /// </summary>
+        /// <param name="plateau">le plateau actuel</param>
+        /// <param name="ligne">la ligne du plateau où l'on veut ranger une pièce</param>
+        /// <param name="colonne">la ligne du plateau où l'on veut ranger une pièce</param>
+        /// <param name="piece">la pièce qu'on souhaite placer sur leplateau</param>
+        /// <returns>true si la partie est terminée(victoire/défaite), false sinon</returns>
         static bool PlacerPiece(int[][] plateau, int ligne, int colonne, int piece)
         {
             plateau[ligne][colonne] = piece;
@@ -167,7 +186,6 @@ namespace VERSION1
                 bool testDiag = true;
                 //test des colonnes et des lignes
 
-                //!! Optimisation : si il colonne a une case vide, alors nécessairement il n'y a pas QUARTO
                 while ((testLigne || testColonne) && j <= 3)
                 {
                     if (testLigne && plateau[ligne][j] == -1 || (piece / (int)Math.Pow(10, i) % 10) != (plateau[ligne][j] / (int)Math.Pow(10, i) % 10))
@@ -206,6 +224,11 @@ namespace VERSION1
             return false;
 
         }
+        /// <summary>
+        /// Permet au joueur de sélectionner une pièce parmis celle qui sont disponibles dans un tableau ordonné.
+        /// </summary>
+        /// <param name="piecesDispo">Les pièces disponibles actuellement en jeu</param>
+        /// <returns>Renvoie un numéro de pièce selon la convention établie dans ce programme</returns>
         static int ChoisirPiece(int[] piecesDispo)
         {
             Console.WriteLine("Voici les pièces disponibles : ");
@@ -223,7 +246,12 @@ namespace VERSION1
             piecesDispo[iRangPiece] = -1;
             return rendu;
         }
-        static int ChoisirPieceAlea(int[] pioche)
+        /// <summary>
+        /// Choisi aléatoirement une pièce disponible de la pioche, et l'en supprime
+        /// </summary>
+        /// <param name="piecesDispo"></param>
+        /// <returns>renvoie la pièce choisie dans la pioche</returns>
+        static int ChoisirPieceAlea(int[] piecesDispo)
         {
             //!! Si on a le temps il faut récupérer un tableau des coups possibles, et piocher aléatoirement là dedans seulement
             int rendu = -1;
@@ -231,24 +259,30 @@ namespace VERSION1
             int position = -1;
             while (rendu == -1)
             {
-                position = R.Next(pioche.Length);
-                rendu = pioche[position];
+                position = R.Next(piecesDispo.Length);
+                rendu = piecesDispo[position];
             }
             //enlève la pièce de la pioche
-            pioche[position] = -1;
+            piecesDispo[position] = -1;
             return rendu;
 
 
         }
+        /// <summary>
+        /// Permet au joueur de choisir où il veut placer sa pièce sur un plateau donné
+        /// </summary>
+        /// <param name="plateau">le plateau actuel du jeu</param>
+        /// <param name="piece">la pièce fournie par l'adversaire</param>
+        /// <returns></returns>
         static int[] ChoisirEmplacement(int[][] plateau, int piece)
 
         {
-            // !! err, il y a le pb du tableau manquant que je ne vais pas nonplus trimbaler partout!
             Console.Clear();
             AfficherPlateau(plateau);
             Console.WriteLine("Ton adversaire a choisi cette pièce : ");
             Console.BackgroundColor = ConsoleColor.DarkMagenta;
 
+            //Affichage de la pièce fournie par l'adversaire sous le tableau
             for (int i = 0; i < 5; i++)
             {
                 if (piece / 1000 == 0) Console.ForegroundColor = ConsoleColor.DarkBlue;
@@ -259,6 +293,7 @@ namespace VERSION1
             Console.WriteLine("où veux tu la placer ? \n(indiquer ligne x puis colonne y au format : xy)");
             string spos = Console.ReadLine();
             int ipos = 0;
+            //verifie que le format employé est le bon, si oui en extrait la ligne et la colonne choisies
             while (!int.TryParse(spos, out ipos) || !(ipos % 10 <= 3 && ipos / 10 <= 3 && ipos / 10 >= 0) || plateau[ipos / 10][ipos % 10] != -1)
             {
                 Console.WriteLine("Le format n'est pas bon ou la case choisie n'est pas vide ! \nindiquer ligne x puis colonne y au format : xy ");
@@ -266,7 +301,12 @@ namespace VERSION1
             }
             return new int[] { ipos / 10, ipos % 10 };
         }
-        static int[] ChoisirEmplacementAlea(int[][] plateau, int piece)
+        /// <summary>
+        /// choisi aléatoirement une des cases libre du plateau
+        /// </summary>
+        /// <param name="plateau">le plateau actuel de la partie</param>
+        /// <returns>un couple de coordonées sous la forme d'un tableau { ligne, colonne }</returns>
+        static int[] ChoisirEmplacementAlea(int[][] plateau)
         {
 
             Random R = new Random();
@@ -277,15 +317,27 @@ namespace VERSION1
                 ligne = R.Next(plateau.Length);
                 colonne = R.Next(plateau[ligne].Length);
             } while (plateau[ligne][colonne] != -1);
-
+            // renvoie de nombres aléatoires parmis ceux autorisés
             return new int[] { ligne, colonne };
 
 
         }
+        /// <summary>
+        /// Par la récursivité, on cherche a choisir les coups permettant d'aller vers une victoir, et évitant les défaites en prédisant les coups suivants.
+        /// </summary>
+        /// <param name="plateau">Le plateau de la partie à évaluer</param>
+        /// <param name="pieceDispo">Les pièces disponibles à ce moment de la partie</param>
+        /// <param name="piecefournie">La pièce donnée par l'adversaire au coup précédent</param>
+        /// <param name="profondeur">le niveau de profondeur de récursivité actuel</param>
+        /// <param name="alpha">permet d'élaguer certaines branches de l'arbre de possibilités</param>
+        /// <param name="beta">permet d'élaguer certaines branches de l'arbre de possibilités</param>
+        /// <param name="observation">La profondeur de recherche attendue par le programme</param>
+        /// <returns>Un tableau de 4 éléments : 1- le score de la branche de l'arbre étudiée, 2-sur quelle ligne placer la pièce fournie,
+        ///                                     3- Sur quelle colonne placer la pièce fournie, 4-Quelle pièce donner à l'adversaire     </returns>
         static int[] ChoisirCoupMinMax(int[][] plateau, int[] pieceDispo, int piecefournie, int profondeur, int alpha, int beta,int observation)
         {
             // Prend en paramètre l'état actuel du plateau, et renvoie le prochain coup à jouer après avoir évalué toutes les 
-            //possibilités de jeux selon la logique de l'algorythme MinMax.
+            // possibilités de jeux selon la logique de l'algorythme MinMax.
             // La fonction renvoie -1 comme pièce si le programme gagne avant d'avoir besoin de donner une pièce à son adversaire.
             // La fonction renvoie (-1,-1) comme coordonés en cas d'égalité (lorsqu'aucune place n'est libre)
 
@@ -301,7 +353,6 @@ namespace VERSION1
             {
                 for (int ligne = 0; ligne < 4; ligne++)
                 {
-                    //!! Test : Console.WriteLine("ligne : " + ligne + "colonne : " + colonne + " profondeur : " + profondeur);
                     //On vérifie qu'on peut bien jouer dans cette case, qu'elle est vide.
                     if (paleCopie[ligne][colonne] == -1)
                     {
@@ -310,11 +361,6 @@ namespace VERSION1
 
                         //Si on tombe sur une défaite( ou une victoire), inutile de chercher plus loin, c'est un coup à éviter (ou à jouer) nécessairement
                         //On utilise (16-prof) car 16 coups peuvent être joués au maximum, la profondeur est nécessairement inférieur à 16.
-                        //De cette manière l'algo privilégie les victoires rapides
-
-
-                        //!! DANGER ici si on est à profondeur 0 ON A UN PROBLeme! si il renvoie
-
                         if(victoire)
                         {
                             if (minOrMax)
@@ -369,16 +415,12 @@ namespace VERSION1
                                     minMax[1] = ligne;
                                     minMax[2] = colonne;
                                     minMax[3] = pieceDispo[pieceRang];
-                                }
-                                //!! Test : Console.WriteLine(" MinMax : " + minMax[0] + " " + scorePiece + " " + minMax[3]);
-                                
+                                }                                
                             }
                         }
                        
                         //enlever la pièce du plateau et la remettre dans la pioche à sa place
                         paleCopie[ligne][colonne] = -1;
-                        //!! Test : AfficherPlateau(plateau);
-
                     }
 
                 }
@@ -387,12 +429,17 @@ namespace VERSION1
             return minMax;
         }
 
-
+        /// <summary>
+        /// Permet de choisir le joueur qui commence de manière aléatoire, tout en restant ludique.
+        /// </summary>
+        /// <returns>vrai si le joueur gagne, il commence. false si le joueur perd, il ne commence pas</returns>
         static bool JouerPileOuFace()
         {
             bool choix = true;
             ConsoleKey cki = ConsoleKey.UpArrow;
             Random R = new Random();
+
+            //Menu controllable avec les flèches du clavier
             do
             {
                 Console.Clear();
@@ -406,6 +453,8 @@ namespace VERSION1
 
             } while (cki != ConsoleKey.Enter && cki != ConsoleKey.Spacebar);
             Console.Clear();
+
+            //Application du choix menu, utilisation de l' "aléatoire" de la machine
             if (choix == (new Random().Next(2) == 0))
             {
                 Console.WriteLine("... Gagné !! Bravo, tu joueras donc le premier");
@@ -419,6 +468,11 @@ namespace VERSION1
                 return false;
             }
         }
+        /// <summary>
+        /// Cette fonction lance une partie en faisant jouer le joueur contre l'ordinateur qui choisit ses coups aléatoirement
+        /// </summary>
+        /// <param name="plateau">le plateau initial pour lancer une partie</param>
+        /// <param name="pieceDispo"> les pièces disponibles en début de partie</param>
         static void JouerRandom(int[][] plateau, int[] pieceDispo)
         {
             Console.Clear();
@@ -427,6 +481,7 @@ namespace VERSION1
             Console.WriteLine("Choisissons qui commence en jouant à Pile ou Face. \n\n\n(Appuyer sur une touche pour continuer)");
             Console.ReadKey();
 
+            //on détermine le premier joueur de manière ludique et aléatoire
             bool premier = !JouerPileOuFace();
             bool deuxieme = true;
             bool gagne = false;
@@ -434,23 +489,40 @@ namespace VERSION1
             int[] emplacement;
             int compteur = 0;
 
+            //boucle des tours
             do
             {
+                //différenciation premier joueur
                 if (premier)
                 {
                     piece = ChoisirPieceAlea(pieceDispo);
                     emplacement = ChoisirEmplacement(plateau, piece);
                     gagne = PlacerPiece(plateau, emplacement[0], emplacement[1], piece);
                     compteur++;
-                    AfficherPlateau(plateau);
-                    Console.WriteLine("Continuer ? (Ecrire QUARTO si vous pensez avoir gagné)");
-                    string input = Console.ReadLine();
-                    if (input == "QUARTO" && gagne)
+                    
+                    // Menu de choix : Dire "Quarto" pour gagner, ou continuer
+                    ConsoleKey cki = ConsoleKey.UpArrow;
+                    bool choix = false;
+                    do
+                    {
+                        Console.Clear();
+                        AfficherPlateau(plateau);
+                        if (choix == false)
+                            Console.WriteLine(  "  --> Continuer <--   ou       dire : \"QUARTO\"\n\n(utiliser les flèches du clavier pour sélectionner)");
+                        else Console.WriteLine( "      Continuer       ou   --> dire : \"QUARTO\" <--\n\n(utiliser les flèches du clavier pour sélectionner)");
+                        cki = Console.ReadKey().Key;
+
+
+                        if (cki == ConsoleKey.LeftArrow || cki == ConsoleKey.RightArrow) choix = !choix;
+
+                    } while (cki != ConsoleKey.Enter && cki != ConsoleKey.Spacebar);
+                    Console.Clear();
+                    if (choix && gagne)
                     {
                         deuxieme = false;
                         Console.WriteLine("BRAVO! tu as gagné!");
                     }
-                    else if (input == "QUARTO" && !gagne)
+                    else if (choix && !gagne)
                     {
                         deuxieme = false;
                         gagne = true;
@@ -463,18 +535,23 @@ namespace VERSION1
                     }
 
                 }
+
+                //différenciation : en cas de fin de partie par le premier joueur il faut sauter la condition suivante
                 if (deuxieme)
                 {
+                    AfficherPlateau(plateau);
                     piece = ChoisirPiece(pieceDispo);
-                    emplacement = ChoisirEmplacementAlea(plateau, piece);
+                    Console.Clear();
+                    emplacement = ChoisirEmplacementAlea(plateau);
                     gagne = PlacerPiece(plateau, emplacement[0], emplacement[1], piece);
                     compteur++;
                     AfficherPlateau(plateau);
-                    Console.WriteLine(gagne);
                     if (gagne) Console.WriteLine("QUARTO ! J'ai gagné !");
-                    premier = false;
+                    premier = true;
                 }
-                if (compteur == 15)
+
+                //Cas de l'égalité
+                if (compteur >= 15 && !gagne)
                 {
                     Console.WriteLine("Personne ne gagne... Egalité, belle partie!");
                     gagne = true;
@@ -488,14 +565,19 @@ namespace VERSION1
 
 
         }
+        /// <summary>
+        /// Cette fonction lance une partie en faisant jouer le joueur contre une IA qui choisit ses coups avec la fonction ChoisirCoupMinMax de manière à gagner
+        /// </summary>
+        /// <param name="plateau">le plateau initial pour lancer une partie</param>
+        /// <param name="pieceDispo"> les pièces disponibles en début de partie</param>
         static void JouerIntelligent(int[][] plateau, int[] pieceDispo)
         {
             Console.Clear();
             Console.WriteLine("          Bienvenue dans le jeu !\n");
-            // Pile ou face ?
             Console.WriteLine("Choisissons qui commence en jouant à Pile ou Face. \n\n\n(Appuyer sur une touche pour continuer)");
             Console.ReadKey();
 
+            //sélection du premier joueur aléatoirement de manière ludique
             bool premier = !JouerPileOuFace();
             bool deuxieme = true;
             bool gagne = false;
@@ -503,28 +585,49 @@ namespace VERSION1
             int piece = -1;
             int compteur = 0;
 
-            int[] proff = new int[] { 0, 0, 1, 1, 3, 3, 3, 3, 5, 5, 7, 7, 7, 7, 7, 3 };
+            //ce tableau permet de définir le nombre de coups à l'avance que l'IA observe. Exclusivement des nombres pairs pour le bon fonctionnement.
+            //Les premiers sont nuls, on choisit aléatoirement. Plus on avance, plus il est possible de chercher l'arbre en profondeur
+            //!! insérer un niveau de difficulté
+            int[] proff = new int[] { 0, 0, 3, 3, 3, 3, 3, 3, 7, 7, 7, 7, 7, 7, 7, 3 };
+            
             //Choisi une pièce au hasard à jouer en premier si l'IA commence
             if (premier)
                 piece = ChoisirPieceAlea(pieceDispo);
 
             do
             {
-
+                //condition permet de différencier quel joueur commence
                 if (premier)
                 {
+
                     emplacement = ChoisirEmplacement(plateau, piece);
                     gagne = PlacerPiece(plateau, emplacement[0], emplacement[1], piece);
                     compteur++;
                     AfficherPlateau(plateau);
-                    Console.WriteLine("Continuer ? (Ecrire QUARTO si vous pensez avoir gagné)");
-                    string input = Console.ReadLine();
-                    if (input == "QUARTO" && gagne)
+                    
+                    // Menu de choix : Dire "Quarto" pour gagner, ou continuer
+                    ConsoleKey cki = ConsoleKey.UpArrow;
+                    bool choix = false;
+                    do
+                    {
+                        Console.Clear();
+                        AfficherPlateau(plateau);
+                        if (choix == false)
+                            Console.WriteLine("  --> Continuer <--   ou       dire : \"QUARTO\"\n\n(utiliser les flèches du clavier pour sélectionner)");
+                        else Console.WriteLine("      Continuer       ou   --> dire : \"QUARTO\" <--\n\n(utiliser les flèches du clavier pour sélectionner)");
+                        cki = Console.ReadKey().Key;
+
+
+                        if (cki == ConsoleKey.LeftArrow || cki == ConsoleKey.RightArrow) choix = !choix;
+
+                    } while (cki != ConsoleKey.Enter && cki != ConsoleKey.Spacebar);
+                    Console.Clear();
+                    if (choix && gagne)
                     {
                         deuxieme = false;
                         Console.WriteLine("BRAVO! tu as gagné!");
                     }
-                    else if (input == "QUARTO" && !gagne)
+                    else if (choix && !gagne)
                     {
                         deuxieme = false;
                         gagne = true;
@@ -537,11 +640,12 @@ namespace VERSION1
                     }
 
                 }
+                //deuxième phase de jeux, la condition permet de la sauter si le joeur précédent a gagné
                 if (deuxieme)
                 {
+                    AfficherPlateau(plateau);
                     piece = ChoisirPiece(pieceDispo);
-                    
-
+                    Console.WriteLine("Je réfléchis...");
                     emplacement = ChoisirCoupMinMax(plateau, pieceDispo,piece,0,int.MaxValue,int.MinValue,proff[compteur]);
 
                     //On retire la pièce choisie des pièces disponibles, car contrairement à la partie aléatoire,où cette action est inclue dans la fonction de choix,
@@ -552,12 +656,18 @@ namespace VERSION1
 
                     gagne = PlacerPiece(plateau, emplacement[1], emplacement[2], piece);
                     compteur++;
-                    AfficherPlateau(plateau);
-                    if (gagne) Console.WriteLine("QUARTO ! J'ai gagné !");
+                    if (gagne)
+                    {
+                        Console.Clear();
+                        AfficherPlateau(plateau);
+                        Console.WriteLine("QUARTO ! J'ai gagné !");
+                    }
                     premier = true;
                     piece = emplacement[3];
                 }
-                if (compteur == 15)
+
+                //traitement du cas d'égalité
+                if (compteur >= 15 && !gagne)
                 {
                     Console.WriteLine("Personne ne gagne... Egalité, belle partie!");
                     gagne = true;
@@ -571,6 +681,14 @@ namespace VERSION1
 
 
         }
+        /// <summary>
+        /// Cette fonction permet de tester l'efficacité du joueur intelligent en le faisant jouer contre un joueur aléatoire.
+        /// Elle part du principe qu'en testant un très grand nombre de parties aléatoires on finit par tomber sur les situation posant problème.
+        /// Cette fonction a été utilisée dans une boucle pendant la phase de test et de debuggage.
+        /// </summary>
+        /// <param name="plateau"> le plateau initial pour lancer une partie</param>
+        /// <param name="pieceDispo"> les pièces disponibles en début de partie</param>
+        /// <returns></returns>
         static bool JouerDebug(int[][] plateau, int[] pieceDispo)
         {
             Console.Clear();
@@ -581,8 +699,6 @@ namespace VERSION1
             int piece = -1;
             int compteur = 0;
 
-            //int[] proff = new int[] { 0, 2, 3, 3, 4, 3, 3, 3, 4, 4, 5, 4, 4, 3, 3, 3 };
-            //int[] proff = new int[] { 1, 1, 1, 1, 3, 3, 3, 3, 3, 5, 5, 7, 7, 3, 3, 3 };
             int[] proff = new int[] { 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
 
             //Choisi une pièce au hasard à jouer en premier si l'IA commence
@@ -595,7 +711,7 @@ namespace VERSION1
                 if (premier)
                 {
                     Console.WriteLine("Joueur");
-                    emplacement = ChoisirEmplacementAlea(plateau, piece);
+                    emplacement = ChoisirEmplacementAlea(plateau);
                     gagne = PlacerPiece(plateau, emplacement[0], emplacement[1], piece);
                     compteur++;
                     AfficherPlateau(plateau);
@@ -628,14 +744,18 @@ namespace VERSION1
             // On n'est jamais censé arriver jusqu'ici !
             return false;
         }
+        /// <summary>
+        /// Fonction de lancement du programme. Permet de choisir le mode de jeu choisi, et de recommencer à jouer une fois une partie terminée
+        /// </summary>
         static void LancerMenu()
         {
+            
             ConsoleKey cki = ConsoleKey.UpArrow;
             int ligne = 0;
             do
-            {
+            {//boucle permettant de faire plusieurs parties de suite
                 do
-                {
+                {//boucle permettant de choisir au clavier l'élément du menu qui nous plait
                     Console.Clear();
 
                     Console.WriteLine("                        QUARTO\n");
@@ -648,111 +768,63 @@ namespace VERSION1
                     else Console.Write("     ");
                     Console.WriteLine("              Jouer en mode intelligent");
 
-                    Console.WriteLine();
                     if (ligne == 2) Console.Write("  -->");
+                    else Console.Write("     ");
+                    Console.WriteLine("              Instructions");
+
+                    Console.WriteLine();
+                    if (ligne == 3) Console.Write("  -->");
                     else Console.Write("     ");
                     Console.WriteLine("              Quitter");
 
                     cki = Console.ReadKey().Key;
                     if (cki == ConsoleKey.UpArrow)
-                        if (ligne == 0) ligne = 2;
+                        if (ligne == 0) ligne = 3;
                         else ligne--;
-                    else if (cki == ConsoleKey.DownArrow) ligne = (ligne + 1) % 3;
+                    else if (cki == ConsoleKey.DownArrow) ligne = (ligne + 1) % 4;
 
                 } while (cki != ConsoleKey.Enter && cki != ConsoleKey.Spacebar);
+                //mise en effet de la sélection
+                //selection jeu aléatoire
                 if (ligne == 0)
+                    //Encodage des pièces disponibles seon la convention(0|1) : couleur(bleu|jaune), taille(petit|grand), forme(rond|carré), remplissage(vide|plein)
+                    //l'ordre choisi est le même que dans la pioche, à la différence prêt que les couleures ne sont pas représentées.
+                    //ie : Pour chaque string dans le tableau affichage, il y a deux pièces dans la pioche.
+                    //Initialisation du plateau avec ses identifiants, plus manipulable que les string. Nous décidons que -1 représente une case vide.
                     JouerRandom(new int[][]{ new int[] { -1, -1, -1, -1 }, new int[] { -1, -1, -1, -1 }, new int[] { -1, -1, -1, -1 }, new int[] { -1, -1, -1, -1 } }, new int[] { 0000, 1000, 0001, 1001, 0010, 1010, 0011, 1011, 0100, 1100, 0101, 1101, 0110, 1110, 0111, 1111});
+
+                //sélection jeu intelligent
                 else if (ligne == 1)
                     JouerIntelligent(new int[][] { new int[] { -1, -1, -1, -1 }, new int[] { -1, -1, -1, -1 }, new int[] { -1, -1, -1, -1 }, new int[] { -1, -1, -1, -1 } }, new int[] { 0000, 1000, 0001, 1001, 0010, 1010, 0011, 1011, 0100, 1100, 0101, 1101, 0110, 1110, 0111, 1111 });
-                else
+
+                //sélection instructions
+                else if (ligne == 2)
                 {
-                    Console.WriteLine("Merci d'avoir joué !");
+                    Console.Clear();
+                    Console.WriteLine(" Bienvenu dans le Quarto\n\n Instructions : \n\n Chacun son tour, vous donnez un pièce à votre adversaire\n" +
+                                                                                  " qui le place sur un plateau 4x4. Le gagnant est le premier joueur \n" +
+                                                                                  " à aligner 4 pièces partageant au moins une caractéristique  parmis : \n" +
+                                                                                  "           couleur, taille, forme, remplissage.\n " +
+                                                                                  "\n\n Bonne Chance ! \n\n (Appuyez sur une touche pour continuer)");
                     Console.ReadKey();
                 }
-            } while (ligne != 2);
+
+                //quitter le jeu
+                else if (ligne == 3)
+                {
+                    Console.WriteLine("\n                Merci d'avoir joué !");
+                    Console.ReadKey();
+                }
+            } while (ligne != 3);
            
             
 
 
         }
-        //!! supprimer les tests
-        static void Test(int[][] plateau, int[] pieceDispo)
-        {
-            //affichage test de toutes les pièces
 
-            ////for (int i = 0; i < 8; i++)
-            ////{
-            ////    Console.ForegroundColor = ConsoleColor.DarkCyan;
-            ////    Console.WriteLine(pioche[2 * i]);
-            ////    Console.WriteLine(tabAffichePiece[i]);
-            ////    Console.ForegroundColor = ConsoleColor.Magenta;
-            ////    Console.WriteLine(pioche[2 * i + 1]);
-            ////    Console.WriteLine(tabAffichePiece[i]);
-
-            //}
-            //Console.WriteLine("A");
-            //Console.WriteLine("        \n        \n   XX   \n  X  X  \n   XX   \n        \n");
-
-            //plateau test
-            CoulissesMateo cm = new CoulissesMateo();
-            int[][] plateautest = { new int[] { 0000, 0001, 1101, 0011 }, new int[] { 0111, 0001, -1, 0110 }, new int[] { -1, 0110, 0111, 0010 }, new int[] { -1, -1, -1, 1011 } };
-
-            //cm.Piocher(pieceDispo, 1001);
-            //cm.Piocher(pieceDispo, 0101);
-            //for (int i = 0; i < pieceDispo.Length; i++)
-            //{
-            //    Console.WriteLine(pieceDispo[i]);
-            //}
-
-
-            //!! Il va falloir ajouter des console.WriteLine ou en tt cas des sauts de ligne parceque là c'est illisible.
-            Console.Clear();
-            AfficherPlateau(plateautest);
-            AfficherPlateau(plateau);
-            AfficherPiecesDispo(pieceDispo);
-            int piece = ChoisirPiece(pieceDispo);
-            ChoisirPieceAlea(pieceDispo);
-
-            // Alors ça c'est magnifique je vais en mettre partout !! ça vide et remet la console propre. On peut construire un menu avec ça :)
-            Console.ResetColor();
-            Console.Clear();
-            Console.ReadLine();
-
-            AfficherPiecesDispo(pieceDispo);
-            PlacerPiece(plateau, 2, 2, piece);
-            Console.WriteLine();
-            AfficherPlateau(plateau);
-            //Partie : 
-
-            int[][] plateautest1 = {    new int[] { 0010, 0011, 0111, -1 },
-                                        new int[] { -1, -1, -1, -1 },
-                                        new int[] { -1, -1, -1, -1 },
-                                        new int[] { -1, -1, -1, -1 } };
-            Console.WriteLine(PlacerPiece(plateautest1, 0, 3, 1010));
-            AfficherPlateau(plateautest1);
-        }
         static void Main(string[] args)
         {
-            // Encodage des pièces disponibles seon la convention(0|1) : couleur(bleu|jaune), taille(petit|grand), forme(rond|carré), remplissage(vide|plein)
-
-
-            //l'ordre choisi est le même que dans la pioche, à la différence prêt que les couleures ne sont pas représentées.
-            //ie : Pour chaque string dans le tableau affichage, il y a deux pièces dans la pioche.
-
-
-            //Initialisation du plateau avec ses identifiants, plus manipulable que les string. Nous décidons que -1 représente une case vide.
             LancerMenu();
-            bool test;
-            int cpt = 0;
-            do
-            {
-                cpt++;
-                test = JouerDebug(new int[][] { new int[] { -1, -1, -1, -1 }, new int[] { -1, -1, -1, -1 }, new int[] { -1, -1, -1, -1 }, new int[] { -1, -1, -1, -1 } }, new int[] { 0000, 1000, 0001, 1001, 0010, 1010, 0011, 1011, 0100, 1100, 0101, 1101, 0110, 1110, 0111, 1111 });
-                Console.WriteLine(cpt);
-            } while (test);
-            Console.WriteLine("FIN : " + cpt);
         }
     }
 }
-
-
