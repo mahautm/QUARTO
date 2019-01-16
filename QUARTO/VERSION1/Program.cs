@@ -8,10 +8,8 @@ namespace VERSION1
 {
     class Program
     {
-        //!! Il faut ajouter la gestion du cas où la grille se termine sur une égalité.
-        //!! reecrire avec une matrice
-        // readonly, pas besoin de passer en param partout
-        //Refaire ce tableau avec des sous-tableaux
+        // Ce tableau ne sert qu'à l'afichage, et est utilisé dans AffichePlateau, AfficherPiecesDispo et ChoisirEmplacement, elles mêmes utilisées dans d'autres fonctions
+        // Comme il n'est jamais modifié, pour éviter de le mettre en paramètre dans chaque fonction du programme, il est disponible à toutes en lecture seule.
         public static readonly string[] affichage = {    "           XX     X  X     XX           ",
                                                          "           XX     XXXX     XX           ",
                                                          "          XXXX    X  X    XXXX          ",
@@ -468,6 +466,27 @@ namespace VERSION1
                 return false;
             }
         }
+        static bool ChoisirNiveauDifficulté()
+        {
+            bool choix = true;
+            ConsoleKey cki = ConsoleKey.UpArrow;
+            //Menu controllable avec les flèches du clavier
+            do
+            {
+                Console.Clear();
+                Console.WriteLine("Il y a deux niveaux de difficulté pour la partie\n(Il faut laisser l'ordinateur réfléchir quelques secondes en mode difficile)\n\nSélectionez un niveau : \n\n");
+                if (choix == false)
+                    Console.WriteLine("  --> Facile <--   ou       Difficile\n\n(utiliser les flèches du clavier pour sélectionner)");
+                else Console.WriteLine("      Facile       ou   --> Difficile <--\n\n(utiliser les flèches du clavier pour sélectionner)");
+                cki = Console.ReadKey().Key;
+
+
+                if (cki == ConsoleKey.LeftArrow || cki == ConsoleKey.RightArrow) choix = !choix;
+
+            } while (cki != ConsoleKey.Enter && cki != ConsoleKey.Spacebar);
+            Console.Clear();
+            return choix;
+        }
         /// <summary>
         /// Cette fonction lance une partie en faisant jouer le joueur contre l'ordinateur qui choisit ses coups aléatoirement
         /// </summary>
@@ -572,11 +591,16 @@ namespace VERSION1
         /// <param name="pieceDispo"> les pièces disponibles en début de partie</param>
         static void JouerIntelligent(int[][] plateau, int[] pieceDispo)
         {
+            //Initialisation
+
             Console.Clear();
-            Console.WriteLine("          Bienvenue dans le jeu !\n");
+            //ce tableau permet de définir le nombre de coups à l'avance que l'IA observe. Exclusivement des nombres impairs pour le bon fonctionnement.
+            //Les premiers sont nuls, on choisit aléatoirement. Plus on avance, plus il est possible de chercher l'arbre en profondeur
+            int[] proff = (ChoisirNiveauDifficulté()) ? new int[] { 0, 0, 3, 3, 3, 3, 3, 3, 7, 7, 15, 15, 15, 15, 15, 15 } : new int[] { 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+
+            Console.WriteLine("          Bienvenue dans cette partie !\n");
             Console.WriteLine("Choisissons qui commence en jouant à Pile ou Face. \n\n\n(Appuyer sur une touche pour continuer)");
             Console.ReadKey();
-
             //sélection du premier joueur aléatoirement de manière ludique
             bool premier = !JouerPileOuFace();
             bool deuxieme = true;
@@ -585,10 +609,6 @@ namespace VERSION1
             int piece = -1;
             int compteur = 0;
 
-            //ce tableau permet de définir le nombre de coups à l'avance que l'IA observe. Exclusivement des nombres pairs pour le bon fonctionnement.
-            //Les premiers sont nuls, on choisit aléatoirement. Plus on avance, plus il est possible de chercher l'arbre en profondeur
-            //!! insérer un niveau de difficulté
-            int[] proff = new int[] { 0, 0, 3, 3, 3, 3, 3, 3, 7, 7, 7, 7, 7, 7, 7, 3 };
             
             //Choisi une pièce au hasard à jouer en premier si l'IA commence
             if (premier)
@@ -745,77 +765,211 @@ namespace VERSION1
             return false;
         }
         /// <summary>
-        /// Fonction de lancement du programme. Permet de choisir le mode de jeu choisi, et de recommencer à jouer une fois une partie terminée
+        /// Permet à deux joueurs humains de jouer l'un contre l'autre sur le plateau virtuel.
         /// </summary>
-        static void LancerMenu()
+        /// <param name="plateau">un plateau de début de partie, vide</param>
+        /// <param name="pieceDispo">les pièces disponibles au début de partie</param>
+        static void JouerHumains(int[][] plateau, int[] pieceDispo)
         {
+            {
+                Console.Clear();
+                Console.WriteLine("          Bienvenue dans le jeu !\n\n\n            >>> JOUEUR 1 <<<\n\n            A toi de jouer!");
+                Console.ReadKey();
+                //!!on détermine le premier joueur de manière ludique et aléatoire (A ajouter ici :) )
+                bool premier = true;
+                bool deuxieme = true;
+                bool gagne = false;
+                int piece;
+                int[] emplacement;
+                int compteur = 0;
+                //boucle des tours
+                do
+                {
+                    //différenciation premier joueur
+                    if (premier)
+                    {
+                        AfficherPlateau(plateau);
+                        piece = ChoisirPiece(pieceDispo);
+                        Console.Clear();
+                        Console.WriteLine("\n\n\n\n            >>> JOUEUR 2 <<<\n\n            A toi de jouer!");
+                        Console.ReadKey();
+                        emplacement = ChoisirEmplacement(plateau, piece);
+                        gagne = PlacerPiece(plateau, emplacement[0], emplacement[1], piece);
+                        compteur++;
+
+                        // Menu de choix : Dire "Quarto" pour gagner, ou continuer
+                        ConsoleKey cki = ConsoleKey.UpArrow;
+                        bool choix = false;
+                        do
+                        {
+                            Console.Clear();
+                            AfficherPlateau(plateau);
+                            if (choix == false)
+                                Console.WriteLine("  --> Continuer <--   ou       dire : \"QUARTO\"\n\n(utiliser les flèches du clavier pour sélectionner)");
+                            else Console.WriteLine("      Continuer       ou   --> dire : \"QUARTO\" <--\n\n(utiliser les flèches du clavier pour sélectionner)");
+                            cki = Console.ReadKey().Key;
+
+
+                            if (cki == ConsoleKey.LeftArrow || cki == ConsoleKey.RightArrow) choix = !choix;
+
+                        } while (cki != ConsoleKey.Enter && cki != ConsoleKey.Spacebar);
+                        Console.Clear();
+                        if (choix && gagne)
+                        {
+                            deuxieme = false;
+                            Console.WriteLine("BRAVO! Joueur 2 Gagne !");
+                        }
+                        else if (choix && !gagne)
+                        {
+                            deuxieme = false;
+                            gagne = true;
+                            Console.WriteLine("C'est faux... Il n'y a pas QUARTO. Joueur 2 perds donc la Partie. Bravo Joueur 1 :)");
+                        }
+                        //On ne met plus de cas où le joueur oublie de dire Quarto, c'est à joueur 1 de le dire la prochaine fois
+
+                    }
+
+                    //différenciation : en cas de fin de partie par le premier joueur il faut sauter la condition suivante
+                    if (deuxieme)
+                    {
+                        AfficherPlateau(plateau);
+                        piece = ChoisirPiece(pieceDispo);
+                        Console.Clear();
+                        Console.WriteLine("\n\n\n\n            >>> JOUEUR 1 <<<\n\n            A toi de jouer!");
+                        Console.ReadKey();
+                        emplacement = ChoisirEmplacement(plateau,piece);
+                        gagne = PlacerPiece(plateau, emplacement[0], emplacement[1], piece);
+                        compteur++;
+                        AfficherPlateau(plateau);
+                        
+                        // Menu de choix : Dire "Quarto" pour gagner, ou continuer
+                        ConsoleKey cki = ConsoleKey.UpArrow;
+                        bool choix = false;
+                        do
+                        {
+                            Console.Clear();
+                            Console.WriteLine("Au Joueur 1 de jouer :");
+                            AfficherPlateau(plateau);
+                            if (choix == false)
+                                Console.WriteLine("  --> Continuer <--   ou       dire : \"QUARTO\"\n\n(utiliser les flèches du clavier pour sélectionner)");
+                            else Console.WriteLine("      Continuer       ou   --> dire : \"QUARTO\" <--\n\n(utiliser les flèches du clavier pour sélectionner)");
+                            cki = Console.ReadKey().Key;
+
+
+                            if (cki == ConsoleKey.LeftArrow || cki == ConsoleKey.RightArrow) choix = !choix;
+
+                        } while (cki != ConsoleKey.Enter && cki != ConsoleKey.Spacebar);
+                        Console.Clear();
+                        if (choix && gagne)
+                        {
+                            deuxieme = false;
+                            Console.WriteLine("BRAVO! Joueur 1 Gagne !");
+                        }
+                        else if (choix && !gagne)
+                        {
+                            deuxieme = false;
+                            gagne = true;
+                            Console.WriteLine("C'est faux... Il n'y a pas QUARTO. Joueur 1 perds donc la Partie. Bravo Joueur 2 :)");
+                        }
+                        premier = true;
+                    }
+
+                    //Cas de l'égalité
+                    if (compteur >= 15 && !gagne)
+                    {
+                        Console.WriteLine("Personne ne gagne... Egalité, belle partie!");
+                        gagne = true;
+                    }
+
+                } while (!gagne);
+                Console.WriteLine("\n(Appuyer sur une touche pour continuer)");
+                Console.ReadKey();
+            }
+        }
+            /// <summary>
+            /// Fonction de lancement du programme. Permet de choisir le mode de jeu choisi, et de recommencer à jouer une fois une partie terminée
+            /// </summary>
+            static void LancerMenu()
+            {
+            
+
             
             ConsoleKey cki = ConsoleKey.UpArrow;
             int ligne = 0;
             do
             {//boucle permettant de faire plusieurs parties de suite
+                // Encodage des pièces disponibles seon la convention(0 | 1) : couleur(bleu | jaune), taille(petit | grand), forme(rond | carré), remplissage(vide | plein)
+                //l'ordre choisi est le même que dans la pioche, à la différence prêt que les couleures ne sont pas représentées.
+                //ie : Pour chaque string dans le tableau affichage, il y a deux pièces dans la pioche.
+                //Initialisation du plateau avec ses identifiants, plus manipulable que les string. Nous décidons que -1 représente une case vide.
+                int[][] plateau = new int[][] { new int[] { -1, -1, -1, -1 }, new int[] { -1, -1, -1, -1 }, new int[] { -1, -1, -1, -1 }, new int[] { -1, -1, -1, -1 } };
+                int[] piecesDispo = new int[] { 0000, 1000, 0001, 1001, 0010, 1010, 0011, 1011, 0100, 1100, 0101, 1101, 0110, 1110, 0111, 1111 };
+
                 do
                 {//boucle permettant de choisir au clavier l'élément du menu qui nous plait
                     Console.Clear();
-
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("                        QUARTO\n");
+                    Console.ForegroundColor = ConsoleColor.White;
 
-                    if (ligne == 0) Console.Write("  -->");
-                    else Console.Write("     ");
-                    Console.WriteLine("              Jouer en mode aléatoire");
+                    if (ligne == 0) Console.Write("       -->");
+                    else Console.Write("          ");
+                    Console.WriteLine("         Jouer seul en mode aléatoire");
 
-                    if (ligne == 1) Console.Write("  -->");
-                    else Console.Write("     ");
-                    Console.WriteLine("              Jouer en mode intelligent");
+                    if (ligne == 1) Console.Write("       -->");
+                    else Console.Write("          ");
+                    Console.WriteLine("         Jouer seul en mode intelligent");
 
-                    if (ligne == 2) Console.Write("  -->");
-                    else Console.Write("     ");
-                    Console.WriteLine("              Instructions");
+                    if (ligne == 2) Console.Write("       -->");
+                    else Console.Write("          ");
+                    Console.WriteLine("         Jouer à deux en mode 1v1");
+
+                    if (ligne == 3) Console.Write("       -->");
+                    else Console.Write("          ");
+                    Console.WriteLine("         Instructions");
 
                     Console.WriteLine();
-                    if (ligne == 3) Console.Write("  -->");
-                    else Console.Write("     ");
-                    Console.WriteLine("              Quitter");
+                    if (ligne == 4) Console.Write("       -->");
+                    else Console.Write("          ");
+                    Console.WriteLine("         Quitter");
 
                     cki = Console.ReadKey().Key;
                     if (cki == ConsoleKey.UpArrow)
-                        if (ligne == 0) ligne = 3;
+                        if (ligne == 0) ligne = 4;
                         else ligne--;
-                    else if (cki == ConsoleKey.DownArrow) ligne = (ligne + 1) % 4;
+                    else if (cki == ConsoleKey.DownArrow) ligne = (ligne + 1) % 5;
 
                 } while (cki != ConsoleKey.Enter && cki != ConsoleKey.Spacebar);
                 //mise en effet de la sélection
                 //selection jeu aléatoire
                 if (ligne == 0)
-                    //Encodage des pièces disponibles seon la convention(0|1) : couleur(bleu|jaune), taille(petit|grand), forme(rond|carré), remplissage(vide|plein)
-                    //l'ordre choisi est le même que dans la pioche, à la différence prêt que les couleures ne sont pas représentées.
-                    //ie : Pour chaque string dans le tableau affichage, il y a deux pièces dans la pioche.
-                    //Initialisation du plateau avec ses identifiants, plus manipulable que les string. Nous décidons que -1 représente une case vide.
-                    JouerRandom(new int[][]{ new int[] { -1, -1, -1, -1 }, new int[] { -1, -1, -1, -1 }, new int[] { -1, -1, -1, -1 }, new int[] { -1, -1, -1, -1 } }, new int[] { 0000, 1000, 0001, 1001, 0010, 1010, 0011, 1011, 0100, 1100, 0101, 1101, 0110, 1110, 0111, 1111});
+                    JouerRandom(plateau, piecesDispo);
 
                 //sélection jeu intelligent
                 else if (ligne == 1)
-                    JouerIntelligent(new int[][] { new int[] { -1, -1, -1, -1 }, new int[] { -1, -1, -1, -1 }, new int[] { -1, -1, -1, -1 }, new int[] { -1, -1, -1, -1 } }, new int[] { 0000, 1000, 0001, 1001, 0010, 1010, 0011, 1011, 0100, 1100, 0101, 1101, 0110, 1110, 0111, 1111 });
-
-                //sélection instructions
+                    JouerIntelligent(plateau, piecesDispo);
+                //sélection jeu humain contre humain
                 else if (ligne == 2)
+                    JouerHumains(plateau, piecesDispo);
+                //sélection instructions
+                else if (ligne == 3)
                 {
                     Console.Clear();
                     Console.WriteLine(" Bienvenu dans le Quarto\n\n Instructions : \n\n Chacun son tour, vous donnez un pièce à votre adversaire\n" +
                                                                                   " qui le place sur un plateau 4x4. Le gagnant est le premier joueur \n" +
-                                                                                  " à aligner 4 pièces partageant au moins une caractéristique  parmis : \n" +
+                                                                                  " à aligner 4 pièces partageant au moins une caractéristique  parmis : \n\n" +
                                                                                   "           couleur, taille, forme, remplissage.\n " +
                                                                                   "\n\n Bonne Chance ! \n\n (Appuyez sur une touche pour continuer)");
                     Console.ReadKey();
                 }
 
                 //quitter le jeu
-                else if (ligne == 3)
+                else if (ligne == 4)
                 {
                     Console.WriteLine("\n                Merci d'avoir joué !");
                     Console.ReadKey();
                 }
-            } while (ligne != 3);
+            } while (ligne != 4);
            
             
 
