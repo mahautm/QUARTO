@@ -47,7 +47,6 @@ namespace VERSION1
             Console.WriteLine("       0       1       2       3");
             for (int ligne = 0; ligne < plat.Length; ligne++)
             {
-                //!! virer les lignes et diviser plat[ligne[colonne par 4 (en division entière)
                 for (int sousligne = 0; sousligne < 5; sousligne++)
                 {
                     Console.ResetColor();
@@ -251,7 +250,7 @@ namespace VERSION1
         /// <returns>renvoie la pièce choisie dans la pioche</returns>
         static int ChoisirPieceAlea(int[] piecesDispo)
         {
-            //!! Si on a le temps il faut récupérer un tableau des coups possibles, et piocher aléatoirement là dedans seulement
+            //!! Si on avait le temps il aurait fallu récupérer un tableau des coups possibles, et piocher aléatoirement dedans.
             int rendu = -1;
             Random R = new Random();
             int position = -1;
@@ -332,7 +331,7 @@ namespace VERSION1
         /// <param name="observation">La profondeur de recherche attendue par le programme</param>
         /// <returns>Un tableau de 4 éléments : 1- le score de la branche de l'arbre étudiée, 2-sur quelle ligne placer la pièce fournie,
         ///                                     3- Sur quelle colonne placer la pièce fournie, 4-Quelle pièce donner à l'adversaire     </returns>
-        static int[] ChoisirCoupMinMax(int[][] plateau, int[] pieceDispo, int piecefournie, int profondeur, int alpha, int beta,int observation)
+        static int[] ChoisirCoupMinMax(int[][] plateau, int[] pieceDispo, int piecefournie, int profondeur,int observation)
         {
             // Prend en paramètre l'état actuel du plateau, et renvoie le prochain coup à jouer après avoir évalué toutes les 
             // possibilités de jeux selon la logique de l'algorythme MinMax.
@@ -383,9 +382,8 @@ namespace VERSION1
 
                                 int scorePiece;
                                 //On regarde quel score donne le choix d'une des pièces (partie récursive de l'algorithme)
-                                //!! est-ce que j'envoie le bon alpha ou le bon béta?
                                 if (profondeur < observation)
-                                    scorePiece = ChoisirCoupMinMax(paleCopie, copiePieceDispo, pieceDispo[pieceRang], profondeur + 1, minOrMax ? alpha : minMax[0], (!minOrMax) ? beta : minMax[0], observation)[0];
+                                    scorePiece = ChoisirCoupMinMax(paleCopie, copiePieceDispo, pieceDispo[pieceRang], profondeur + 1, observation)[0];
                                 else scorePiece = (minOrMax) ? int.MinValue : int.MaxValue;
                                 // Dans le cas où l'on est à une profondeur pair, et donc que l'on cherche à maximiser le score,
                                 //alors on stock dans minMax le score maximal qu'on puisse obtenir en donnant une des pièceDispo à l'adversaire
@@ -408,7 +406,6 @@ namespace VERSION1
                                 //Dans le cas ou aucune des option ne se démarque, on en séléctionne une quand même
                                 else if (minMax[1] == -1 && minMax[2] == -1)
                                 {
-                                    //!! ici potentiellement ajouter de l'aléatoire !
                                     minMax[0] = (minOrMax) ? int.MinValue : int.MaxValue;
                                     minMax[1] = ligne;
                                     minMax[2] = colonne;
@@ -466,6 +463,10 @@ namespace VERSION1
                 return false;
             }
         }
+        /// <summary>
+        /// Affichage du menu permettant de choisir le niveau de difficulté
+        /// </summary>
+        /// <returns>True pour un niveau difficile, false pour un niveau de difficulté facile</returns>
         static bool ChoisirNiveauDifficulté()
         {
             bool choix = true;
@@ -666,7 +667,7 @@ namespace VERSION1
                     AfficherPlateau(plateau);
                     piece = ChoisirPiece(pieceDispo);
                     Console.WriteLine("Je réfléchis...");
-                    emplacement = ChoisirCoupMinMax(plateau, pieceDispo,piece,0,int.MaxValue,int.MinValue,proff[compteur]);
+                    emplacement = ChoisirCoupMinMax(plateau, pieceDispo,piece,0,proff[compteur]);
 
                     //On retire la pièce choisie des pièces disponibles, car contrairement à la partie aléatoire,où cette action est inclue dans la fonction de choix,
                     //ici la fonction minmax ne fait qu'indiquer le meilleur coup possible, mais ne modifie aucun tableau. pour permettre la récursivité.
@@ -743,7 +744,7 @@ namespace VERSION1
                 {
                     Console.WriteLine("IA");
                     piece = ChoisirPieceAlea(pieceDispo);
-                    emplacement = ChoisirCoupMinMax(plateau, pieceDispo, piece, 0, int.MaxValue, int.MinValue, proff[compteur]);
+                    emplacement = ChoisirCoupMinMax(plateau, pieceDispo, piece, 0, proff[compteur]);
                     //On retire la pièce choisie des pièces disponibles, car contrairement à la partie aléatoire,où cette action est inclue dans la fonction de choix,
                     //ici la fonction minmax ne fait qu'indiquer le meilleur coup possible, mais ne modifie aucun tableau. pour permettre la récursivité.
                     if (emplacement[3] / 1000 == 1)
@@ -775,7 +776,6 @@ namespace VERSION1
                 Console.Clear();
                 Console.WriteLine("          Bienvenue dans le jeu !\n\n\n            >>> JOUEUR 1 <<<\n\n            A toi de jouer!");
                 Console.ReadKey();
-                //!!on détermine le premier joueur de manière ludique et aléatoire (A ajouter ici :) )
                 bool premier = true;
                 bool deuxieme = true;
                 bool gagne = false;
@@ -886,10 +886,10 @@ namespace VERSION1
                 Console.ReadKey();
             }
         }
-            /// <summary>
-            /// Fonction de lancement du programme. Permet de choisir le mode de jeu choisi, et de recommencer à jouer une fois une partie terminée
+        /// <summary>
+            /// Fonction de lancement du programme. Permet de choisir le mode de jeu, et de recommencer à jouer une fois une partie terminée
             /// </summary>
-            static void LancerMenu()
+        static void LancerMenu()
             {
             
 
